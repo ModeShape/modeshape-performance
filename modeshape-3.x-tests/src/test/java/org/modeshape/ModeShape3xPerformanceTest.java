@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.modeshape.jcr.JcrRepositoryFactory;
 import org.modeshape.jcr.perftests.PerformanceTestSuiteRunner;
+import org.modeshape.jcr.perftests.report.BarChartReport;
 import org.modeshape.jcr.perftests.report.TextFileReport;
 import java.net.URL;
 import java.util.HashMap;
@@ -50,5 +51,6 @@ public class ModeShape3xPerformanceTest {
     @After
     public void after() throws Exception {
         performanceTestSuiteRunner.generateTestReport(new TextFileReport());
+        performanceTestSuiteRunner.generateTestReport(new BarChartReport());
     }
 }
