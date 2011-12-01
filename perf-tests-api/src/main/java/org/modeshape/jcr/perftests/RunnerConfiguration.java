@@ -38,7 +38,6 @@ public final class RunnerConfiguration {
 
     final List<String> excludeTestsRegExp = new ArrayList<String>();
     final List<String> includeTestsRegExp = new ArrayList<String>();
-    final List<String> scanSubPackages = new ArrayList<String>();
 
     int repeatCount = 1;
     int warmupCount = 1;
@@ -73,11 +72,6 @@ public final class RunnerConfiguration {
         return this;
     }
 
-    public RunnerConfiguration addSubPackagesToScan( String... scanSubPackages ) {
-        this.scanSubPackages.addAll(Arrays.asList(scanSubPackages));
-        return this;
-    }
-
     public RunnerConfiguration setRepeatCount( int repeatCount ) {
         this.repeatCount = repeatCount;
         return this;
@@ -91,7 +85,6 @@ public final class RunnerConfiguration {
     private void initRunner( Properties configParams ) {
         parseMultiValuedString(configParams.getProperty("tests.exclude"), excludeTestsRegExp);
         parseMultiValuedString(configParams.getProperty("tests.include"), includeTestsRegExp);
-        parseMultiValuedString(configParams.getProperty("scan.subPackages"), scanSubPackages);
         repeatCount = Integer.valueOf(configParams.getProperty("repeat.count"));
         warmupCount = Integer.valueOf(configParams.getProperty("warmup.count"));
     }

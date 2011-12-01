@@ -60,9 +60,8 @@ The performance tests are grouped into several subpackages inside `org.modeshape
 
 ### Adding new tests
 
-To add a new test, all you need to do is subclass the `org.modeshape.jcr.perftests.AbstractPerformanceTestSuite` class and place
-this test inside one of the above packages. As an alternative, you can create a new package as long as you include it in the list
-of packages which are scanned. See below for more information.
+To add a new test, all you need to do is subclass the `org.modeshape.jcr.perftests.AbstractPerformanceTestSuite` class inside the
+perf-tests-api module.
 
 ## Configuration
 
@@ -70,8 +69,6 @@ The following configuration options are available for tweaking the framework:
 
     * runner.properties - configuration file which controls the global parameters for the test runner
 
-        * scan.subPackages - a comma separated list of string, representing the subpackage names of `org.modeshape.jcr.perftests`
-         which will be scanned automatically for test suites. The default value is: `init, query, read, write`.
         * tests.exclude - a comma separated list of regular expressions, representing the name of the test suites that won't be run.
          By default, nothing is excluded.
         * tests.include - a comma separated list of regular expressions, representing the name of the test suites which are included
