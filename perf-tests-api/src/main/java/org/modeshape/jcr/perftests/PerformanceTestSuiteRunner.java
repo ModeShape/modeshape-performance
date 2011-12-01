@@ -24,6 +24,8 @@ import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
@@ -49,16 +51,12 @@ public final class PerformanceTestSuiteRunner {
     private final TestData testData;
     private final RunnerConfiguration runnerConfig;
 
-    /**
-     * Creates a new default test runner instance, which loads its properties from a file called "runner.properties" in the classpath.
-     */
+    /** Creates a new default test runner instance, which loads its properties from a file called "runner.properties" in the classpath. */
     public PerformanceTestSuiteRunner() {
         this(new RunnerConfiguration());
     }
 
-    /**
-     * Creates a new runner instance passing a custom config.
-     */
+    /** Creates a new runner instance passing a custom config. */
     public PerformanceTestSuiteRunner( RunnerConfiguration runnerConfig ) {
         this.testData = new TestData();
         this.runnerConfig = runnerConfig;
@@ -92,7 +90,7 @@ public final class PerformanceTestSuiteRunner {
      * @param generator a <code>TestReportGenerator</code> instance.
      * @throws Exception if anything fails during the report generation.
      */
-    public void generateTestReport(TestReportGenerator generator) throws Exception {
+    public void generateTestReport( TestReportGenerator generator ) throws Exception {
         generator.generateReport(testData);
     }
 
@@ -111,7 +109,7 @@ public final class PerformanceTestSuiteRunner {
             return;
         }
 
-        LOGGER.info("Starting suite: {}[warmup #:{}, repeat#{}]", new Object[]{
+        LOGGER.info("Starting suite: {}[warmup #:{}, repeat#{}]", new Object[] {
                 testSuiteClass.getSimpleName(), runnerConfig.warmupCount, runnerConfig.repeatCount});
         testSuite.setUp();
         //warm up the suite
@@ -119,7 +117,7 @@ public final class PerformanceTestSuiteRunner {
                 runnerConfig.warmupCount) {
             @Override
             public Void call() throws Exception {
-                 testSuite.run();
+                testSuite.run();
                 return null;
             }
         };
@@ -170,16 +168,24 @@ public final class PerformanceTestSuiteRunner {
         }.run();
     }
 
-    private Set<Class<? extends AbstractPerformanceTestSuite>> loadPerformanceTestSuites() {
+    private Set<Class<? extends AbstractPerformanceTestSuite>> loadPerformanceTestSuites() throws MalformedURLException {
         ConfigurationBuilder builder = new ConfigurationBuilder();
-        for (String subpackageName : runnerConfig.scanSubPackages) {
-            String fullPackageName = this.getClass().getPackage().getName() + "." + subpackageName;
-            builder.addUrls(getClass().getClassLoader().getResource(fullPackageName.replaceAll("\\.", "/")));
-        }
+        builder.addUrls(getRootUrlToScan());
+
         Reflections reflections = new Reflections(builder);
         return reflections.getSubTypesOf(AbstractPerformanceTestSuite.class);
     }
 
+    private URL getRootUrlToScan() throws MalformedURLException {
+        String fullPackageName = this.getClass().getPackage().getName();
+        URL resourceUrl = getClass().getClassLoader().getResource(fullPackageName.replaceAll("\\.", "/"));
+        String urlString = resourceUrl.toExternalForm();
+        String jarIndicator = "!/";
+        if (urlString.contains(jarIndicator)) {
+            urlString = urlString.substring(0, urlString.indexOf(jarIndicator) + jarIndicator.length());
+        }
+        return new URL(urlString);
+    }
 
     /**
      * Class which represents a recordable operation, depending on whether the warmup parameters is true or not. In case of warmup,

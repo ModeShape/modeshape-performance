@@ -17,6 +17,7 @@
 		<jcr.version>2.0</jcr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <surefire.debug></surefire.debug>
     </properties>
 
     <dependencyManagement>
@@ -72,7 +73,7 @@
                 <version>2.10</version>
                 <configuration>
                     <enableAssertions>true</enableAssertions>
-                    <argLine>-Xmx1024M</argLine>
+                    <argLine>-Xmx1024M ${surefire.debug}</argLine>
                 </configuration>
             </plugin>
         </plugins>
@@ -84,4 +85,13 @@
         <module>modeshape-2.x-tests</module>
         <module>modeshape-3.x-tests</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>debug</id>
+            <properties>
+                <surefire.debug>-Xnoagent -Djava.compiler=NONE -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000</surefire.debug>
+            </properties>
+        </profile>
+    </profiles>
 </project>
