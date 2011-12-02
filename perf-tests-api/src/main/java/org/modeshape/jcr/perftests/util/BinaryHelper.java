@@ -16,15 +16,15 @@
  */
 package org.modeshape.jcr.perftests.util;
 
-import javax.jcr.Binary;
-import javax.jcr.RepositoryException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.jcr.Binary;
+import javax.jcr.RepositoryException;
 
 /**
  * Utility class used by tests when working with {@link javax.jcr.Binary} implementations
- *
+ * 
  * @author Horia Chiorean
  */
 public final class BinaryHelper {
@@ -35,10 +35,14 @@ public final class BinaryHelper {
     /**
      * Asserts that the given binary source has the expected size (in bytes). The operation reads the data from the binary
      * instance into a byte array and checks the size of the byte array
+     * 
      * @param source a <code>Binary</code> instance.
      * @param expectedSize the expected size of the binary
+     * @throws RepositoryException
+     * @throws IOException
      */
-    public static void assertExpectedSize( Binary source, int expectedSize ) throws RepositoryException, IOException {
+    public static void assertExpectedSize( Binary source,
+                                           int expectedSize ) throws RepositoryException, IOException {
         ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
         InputStream inputStream = source.getStream();
         try {

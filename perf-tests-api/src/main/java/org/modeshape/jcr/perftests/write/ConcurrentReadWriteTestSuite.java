@@ -16,15 +16,16 @@
  */
 package org.modeshape.jcr.perftests.write;
 
+import java.util.Random;
+import java.util.concurrent.Callable;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import org.modeshape.jcr.perftests.SuiteConfiguration;
 import org.modeshape.jcr.perftests.read.ConcurrentReadTestSuite;
-import java.util.Random;
-import java.util.concurrent.Callable;
 
 /**
- * A {@link org.modeshape.jcr.perftests.read.ConcurrentReadTestSuite} with a single writer thread that continuously updates the nodes being accessed by the readers.
+ * A {@link org.modeshape.jcr.perftests.read.ConcurrentReadTestSuite} with a single writer thread that continuously updates the
+ * nodes being accessed by the readers.
  */
 public class ConcurrentReadWriteTestSuite extends ConcurrentReadTestSuite {
 
@@ -38,13 +39,16 @@ public class ConcurrentReadWriteTestSuite extends ConcurrentReadTestSuite {
         addBackgroundJob(new Writer());
     }
 
-    private class Writer implements Callable<Void> {
+    protected class Writer implements Callable<Void> {
 
+        @SuppressWarnings( "synthetic-access" )
         private final Session session = newSession();
         private final Random random = new Random();
 
         private long count = 0;
 
+        @SuppressWarnings( "synthetic-access" )
+        @Override
         public Void call() throws Exception {
             int i = random.nextInt(nodeCount);
             int j = random.nextInt(nodeCount);

@@ -16,19 +16,18 @@
  */
 package org.modeshape.jcr.perftests;
 
-import javax.jcr.Credentials;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import javax.jcr.Credentials;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 /**
  * Abstract base class for individual performance benchmarks.To create a new performance test suite, you should subclass this.
- *
+ * 
  * @author Horia Chiorean
  */
 public abstract class AbstractPerformanceTestSuite {
@@ -41,20 +40,19 @@ public abstract class AbstractPerformanceTestSuite {
     /** executor which is used to fire up async jobs */
     private ExecutorService execService;
 
-    /** flag used to signal to signal to the different (potential) threads created by the suite that the suite is active */
+    /** flag used to signal to the different (potential) threads created by the suite that the suite is active */
     private volatile boolean running;
 
-    public AbstractPerformanceTestSuite(SuiteConfiguration suiteConfiguration) {
+    public AbstractPerformanceTestSuite( SuiteConfiguration suiteConfiguration ) {
         this.suiteConfiguration = suiteConfiguration;
     }
 
     /**
      * Prepares this performance benchmark.
-     *
+     * 
      * @throws Exception if the benchmark can not be prepared
      */
-    public final void setUp()
-            throws Exception {
+    public final void setUp() throws Exception {
         this.sessions = new LinkedList<Session>();
         this.execService = Executors.newCachedThreadPool();
         this.running = true;
@@ -64,7 +62,7 @@ public abstract class AbstractPerformanceTestSuite {
 
     /**
      * Executes a single iteration of this test.
-     *
+     * 
      * @throws Exception if an error occurs
      */
     public final void run() throws Exception {
@@ -78,7 +76,7 @@ public abstract class AbstractPerformanceTestSuite {
 
     /**
      * Cleans up after this performance benchmark.
-     *
+     * 
      * @throws Exception if the benchmark can not be cleaned up
      */
     public final void tearDown() throws Exception {
@@ -95,6 +93,7 @@ public abstract class AbstractPerformanceTestSuite {
 
     /**
      * Indicates if the test suite is compatible with the repository from the <code>SuiteConfiguration</code> object.
+     * 
      * @return true of false depending on the operation(s) performed by the suite.
      */
     public boolean isCompatibleWithCurrentRepository() {
@@ -109,7 +108,7 @@ public abstract class AbstractPerformanceTestSuite {
         }
     }
 
-    protected Session newSession(Credentials credentials) {
+    protected Session newSession( Credentials credentials ) {
         try {
             Session session = suiteConfiguration.getRepository().login(credentials);
             sessions.add(session);
@@ -124,16 +123,15 @@ public abstract class AbstractPerformanceTestSuite {
     }
 
     /**
-     * Adds a background thread that repeatedly executes the given job
-     * until all the iterations of this test have been executed.
-     *
+     * Adds a background thread that repeatedly executes the given job until all the iterations of this test have been executed.
+     * 
      * @param job background job
      */
     protected void addBackgroundJob( final Callable<?> job ) {
         execService.submit(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                while (running) {
+                while (isRunning()) {
                     job.call();
                 }
                 return null;
@@ -141,13 +139,21 @@ public abstract class AbstractPerformanceTestSuite {
         });
     }
 
+    protected final boolean isRunning() {
+        return running;
+    }
+
     protected abstract void runTest() throws Exception;
 
-    protected void afterTestRun() throws Exception {}
+    protected void afterTestRun() throws Exception {
+    }
 
-    protected void beforeTestRun() throws Exception {}
+    protected void beforeTestRun() throws Exception {
+    }
 
-    protected void beforeSuite() throws Exception {}
+    protected void beforeSuite() throws Exception {
+    }
 
-    protected void afterSuite() throws Exception {}
+    protected void afterSuite() throws Exception {
+    }
 }

@@ -16,16 +16,16 @@
  */
 package org.modeshape.jcr.perftests.read;
 
+import java.util.Random;
+import java.util.concurrent.Callable;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import org.modeshape.jcr.perftests.AbstractPerformanceTestSuite;
 import org.modeshape.jcr.perftests.SuiteConfiguration;
-import java.util.Random;
-import java.util.concurrent.Callable;
 
 /**
- * Test case that traverses a set of  unstructured nodes while
- * a number of concurrent readers randomly access nodes from within this tree.
+ * Test case that traverses a set of unstructured nodes while a number of concurrent readers randomly access nodes from within
+ * this tree.
  */
 public class ConcurrentReadTestSuite extends AbstractPerformanceTestSuite {
 
@@ -41,6 +41,7 @@ public class ConcurrentReadTestSuite extends AbstractPerformanceTestSuite {
         super(suiteConfiguration);
     }
 
+    @Override
     public void beforeSuite() throws Exception {
         session = newSession();
         root = session.getRootNode().addNode("testroot", "nt:unstructured");
@@ -59,11 +60,13 @@ public class ConcurrentReadTestSuite extends AbstractPerformanceTestSuite {
         }
     }
 
-    private class Reader implements Callable<Void> {
+    protected class Reader implements Callable<Void> {
 
+        @SuppressWarnings( "synthetic-access" )
         private final Session session = newSession();
         private final Random random = new Random();
 
+        @Override
         public Void call() throws Exception {
             int i = random.nextInt(nodeCount);
             int j = random.nextInt(nodeCount);
@@ -72,6 +75,7 @@ public class ConcurrentReadTestSuite extends AbstractPerformanceTestSuite {
         }
     }
 
+    @Override
     public void runTest() throws Exception {
         Reader reader = new Reader();
         for (int i = 0; i < READERS_COUNT; i++) {
@@ -79,6 +83,7 @@ public class ConcurrentReadTestSuite extends AbstractPerformanceTestSuite {
         }
     }
 
+    @Override
     public void afterSuite() throws Exception {
         root.remove();
         session.save();

@@ -16,14 +16,14 @@
  */
 package org.modeshape.jcr.perftests;
 
-import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
 /**
  * Class which provides various statistical information based on a number of numerical values.
- *
+ * 
  * @author Horia Chiorean
  */
 public final class StatisticalData {
@@ -32,7 +32,7 @@ public final class StatisticalData {
     private final SummaryStatistics summaryStatistics;
 
     public StatisticalData( List<? extends Number> valuesList ) {
-       this(valuesList.toArray(valuesList.toArray(new Number[valuesList.size()])));
+        this(valuesList.toArray(valuesList.toArray(new Number[valuesList.size()])));
     }
 
     public StatisticalData( Number... values ) {
@@ -47,7 +47,7 @@ public final class StatisticalData {
         for (int i = 0; i < values.length; i++) {
             this.values[i] = values[i].doubleValue();
         }
-        //store the values in ascending order
+        // store the values in ascending order
         Arrays.sort(this.values);
     }
 
@@ -75,7 +75,7 @@ public final class StatisticalData {
             return values[0];
         }
         int middleIdx = values.length / 2;
-        return median(Arrays.copyOfRange(values,0, middleIdx));
+        return median(Arrays.copyOfRange(values, 0, middleIdx));
     }
 
     public double median() {
@@ -94,8 +94,9 @@ public final class StatisticalData {
             return values[1];
         }
         int middleIdx = values.length / 2;
-        return (values.length % 2 == 0) ? median(Arrays.copyOfRange(values, middleIdx, values.length)) :
-                                          median(Arrays.copyOfRange(values, middleIdx + 1, values.length));
+        return (values.length % 2 == 0) ? median(Arrays.copyOfRange(values, middleIdx, values.length)) : median(Arrays.copyOfRange(values,
+                                                                                                                                   middleIdx + 1,
+                                                                                                                                   values.length));
     }
 
     public double[] fiveNumberSummary() {
@@ -117,9 +118,8 @@ public final class StatisticalData {
         int middleIdx = values.length / 2;
         if (values.length % 2 == 0) {
             return avg(values[middleIdx - 1], values[middleIdx]);
-        } else {
-            return values[middleIdx];
         }
+        return values[middleIdx];
     }
 
     private double avg( double... values ) {
