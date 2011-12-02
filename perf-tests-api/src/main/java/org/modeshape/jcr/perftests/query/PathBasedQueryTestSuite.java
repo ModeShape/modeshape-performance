@@ -16,6 +16,7 @@
  */
 package org.modeshape.jcr.perftests.query;
 
+import java.util.Random;
 import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.Session;
@@ -23,12 +24,10 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import org.modeshape.jcr.perftests.AbstractPerformanceTestSuite;
 import org.modeshape.jcr.perftests.SuiteConfiguration;
-import java.util.Random;
 
 /**
- * <code>PathBasedQueryTestSuite</code> implements a performance test executing a
- * query that has a path constraint with low selectivity, whereas the predicate
- * is very selective.
+ * <code>PathBasedQueryTestSuite</code> implements a performance test executing a query that has a path constraint with low
+ * selectivity, whereas the predicate is very selective.
  */
 public class PathBasedQueryTestSuite extends AbstractPerformanceTestSuite {
 
@@ -55,17 +54,19 @@ public class PathBasedQueryTestSuite extends AbstractPerformanceTestSuite {
         session.save();
     }
 
+    @SuppressWarnings( "deprecation" )
     @Override
     public void runTest() throws Exception {
         QueryManager qm = session.getWorkspace().getQueryManager();
-        Query q = qm.createQuery("/jcr:root" + root.getPath() + "/*/*[@count = " + (nodeCount * nodeCount - 1)  +"]", Query.XPATH);
+        Query q = qm.createQuery("/jcr:root" + root.getPath() + "/*/*[@count = " + (nodeCount * nodeCount - 1) + "]", Query.XPATH);
         for (int i = 0; i < nodeCount; i++) {
             Node result = q.execute().getNodes().nextNode();
             assert result != null;
         }
         Random rnd = new Random();
         for (int i = 0; i < nodeCount; i++) {
-            q = qm.createQuery("/jcr:root" + root.getPath() + "/*/*[@count = " + rnd.nextInt(nodeCount * nodeCount) + "]", Query.XPATH);
+            q = qm.createQuery("/jcr:root" + root.getPath() + "/*/*[@count = " + rnd.nextInt(nodeCount * nodeCount) + "]",
+                               Query.XPATH);
             Node result = q.execute().getNodes().nextNode();
             assert result != null;
         }
@@ -77,6 +78,7 @@ public class PathBasedQueryTestSuite extends AbstractPerformanceTestSuite {
         session.save();
     }
 
+    @SuppressWarnings( "deprecation" )
     @Override
     public boolean isCompatibleWithCurrentRepository() {
         String xpathSupported = suiteConfiguration.getRepository().getDescriptor(Repository.OPTION_QUERY_SQL_SUPPORTED);

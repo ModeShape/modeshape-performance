@@ -16,7 +16,10 @@
  */
 package org.modeshape.jcr.perftests.query;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import org.modeshape.jcr.perftests.AbstractPerformanceTestSuite;
@@ -67,8 +70,9 @@ public class SimpleSearchTestSuite extends AbstractPerformanceTestSuite {
         session.logout();
     }
 
-    protected Query createQuery( QueryManager manager, int i )
-            throws RepositoryException {
+    @SuppressWarnings( "deprecation" )
+    protected Query createQuery( QueryManager manager,
+                                 int i ) throws RepositoryException {
         return manager.createQuery("//*[@testcount=" + i + "]", Query.XPATH);
     }
 }

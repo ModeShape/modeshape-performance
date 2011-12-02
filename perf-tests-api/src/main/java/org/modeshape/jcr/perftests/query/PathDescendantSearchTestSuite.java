@@ -16,7 +16,10 @@
  */
 package org.modeshape.jcr.perftests.query;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import org.modeshape.jcr.perftests.AbstractPerformanceTestSuite;
@@ -58,7 +61,7 @@ public class PathDescendantSearchTestSuite extends AbstractPerformanceTestSuite 
             NodeIterator iterator = query.execute().getNodes();
             while (iterator.hasNext()) {
                 Node node = iterator.nextNode();
-                assert  node.getProperty("testcount").getLong() == i;
+                assert node.getProperty("testcount").getLong() == i;
             }
         }
     }
@@ -70,8 +73,9 @@ public class PathDescendantSearchTestSuite extends AbstractPerformanceTestSuite 
         session.logout();
     }
 
-    protected Query createQuery( QueryManager manager, int i )
-            throws RepositoryException {
+    @SuppressWarnings( "deprecation" )
+    protected Query createQuery( QueryManager manager,
+                                 int i ) throws RepositoryException {
         return manager.createQuery("/jcr:root/testroot//element(*,nt:base)[@testcount=" + i + "]", Query.XPATH);
     }
 }
