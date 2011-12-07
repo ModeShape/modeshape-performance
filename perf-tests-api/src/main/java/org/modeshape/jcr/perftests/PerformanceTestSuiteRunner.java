@@ -16,33 +16,29 @@
  */
 package org.modeshape.jcr.perftests;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import javax.jcr.Credentials;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryFactory;
-import org.modeshape.jcr.perftests.report.TestReportGenerator;
+import org.modeshape.jcr.perftests.report.CsvReport;
 import org.reflections.Reflections;
+import org.reflections.scanners.TypesScanner;
+import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.net.MalformedURLException;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
- * Class which runs a set of test suites against all the JCR repositories which are found in the classpath. The
- * <code>ServiceLoader</code> mechanism is used for scanning the <code>RepositoryFactory</code> instances. In order to locate the
- * test suites which are to be run, a set of properties (loaded from a config file - runner.properties) have meaning:
- * -scan.subPackages : a comma separated list of simple package names under org.modeshape.jcr.perftests which will be scanned to
- * determine the list of suites to run. -tests.exclude : a comma separated list of java regexps for tests which should be excluded
- * (has precedence of tests.include) -tests.include : a comma separated list of java regexps for tests which should be included
- * 
+ * Class which runs a set of test suites against all the JCR repositories which are found in the classpath. The <code>ServiceLoader</code>
+ * mechanism is used for scanning the <code>RepositoryFactory</code> instances.
+ *
+ * All subclasses of {@link org.modeshape.jcr.perftests.AbstractPerformanceTestSuite} found within the org.modeshape.jcr.perftests package
+ * (or subpackages) will be loaded by default.
+ *
  * @author Horia Chiorean
  */
 public final class PerformanceTestSuiteRunner {
@@ -52,34 +48,25 @@ public final class PerformanceTestSuiteRunner {
     private final TestData testData;
     private final RunnerConfiguration runnerConfig;
 
-    /**
-     * Creates a new default test runner instance, which loads its properties from a file called "runner.properties" in the
-     * classpath.
-     */
-    public PerformanceTestSuiteRunner() {
-        this(new RunnerConfiguration());
+    /** Creates a new default test runner instance, which loads its properties from a file called "runner.properties" in the classpath. */
+    public PerformanceTestSuiteRunner(String repositoryName) {
+        this(repositoryName, new RunnerConfiguration());
     }
 
-    /**
-     * Creates a new runner instance passing a custom config.
-     * 
-     * @param runnerConfig the runner configuration; may not be null
-     */
-    public PerformanceTestSuiteRunner( RunnerConfiguration runnerConfig ) {
-        this.testData = new TestData();
+    /** Creates a new runner instance passing a custom config. */
+    public PerformanceTestSuiteRunner( String repositoryName, RunnerConfiguration runnerConfig) {
+        this.testData = new TestData(repositoryName);
         this.runnerConfig = runnerConfig;
     }
 
     /**
-     * Uses the given map of parameters together with the <code>ServiceLoader</code> mechanism to get all the
-     * <code>RepositoryFactory</code> instances and the subsequent repositories against which the tests will be run.
-     * 
-     * @param repositoryConfigParams a map of config params {@link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}
+     * Uses the given map of parameters together with the <code>ServiceLoader</code> mechanism to get all the <code>RepositoryFactory</code>
+     * instances and the subsequent repositories against which the tests will be run.
+     *
+     * @param repositoryConfigParams a map of config params {@see {@link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}}
      * @param credentials a set of credentials which may be needed by a certain repo to run. It can be null.
-     * @throws Exception if running the test suite resulted in an exception
      */
-    public void runPerformanceTests( Map<?, ?> repositoryConfigParams,
-                                     Credentials credentials ) throws Exception {
+    public void runPerformanceTests( Map repositoryConfigParams, Credentials credentials ) throws Exception {
         for (RepositoryFactory repositoryFactory : ServiceLoader.load(RepositoryFactory.class)) {
             Repository repository = initRepository(repositoryFactory, repositoryConfigParams, credentials);
             if (repository == null) {
@@ -92,42 +79,40 @@ public final class PerformanceTestSuiteRunner {
                 runTestSuite(suiteConfiguration, testSuiteClass);
             }
         }
+
+        new CsvReport().generateReport(testData);
     }
+
 
     /**
-     * Generates a report for the test which have been run, based on the existing test data and the provided
-     * {@link TestReportGenerator}
-     * 
-     * @param generator a <code>TestReportGenerator</code> instance.
-     * @throws Exception if anything fails during the report generation.
+     * Returns the test data which has been recorded by this runner.
+     *
+     * @return a {@link TestData} instance.
      */
-    public void generateTestReport( TestReportGenerator generator ) throws Exception {
-        generator.generateReport(testData);
+    public TestData getTestData() {
+        return testData;
     }
 
-    private void runTestSuite( SuiteConfiguration suiteConfiguration,
-                               Class<? extends AbstractPerformanceTestSuite> testSuiteClass ) throws Exception {
-        final AbstractPerformanceTestSuite testSuite = testSuiteClass.getConstructor(SuiteConfiguration.class)
-                                                                     .newInstance(suiteConfiguration);
+    private void runTestSuite( SuiteConfiguration suiteConfiguration, Class<? extends AbstractPerformanceTestSuite> testSuiteClass )
+            throws Exception {
+        final AbstractPerformanceTestSuite testSuite = testSuiteClass.getConstructor(SuiteConfiguration.class).newInstance(suiteConfiguration);
 
         if (isSuiteExcluded(testSuiteClass)) {
             return;
         }
 
-        String repoName = suiteConfiguration.getRepository().getClass().getSimpleName();
         if (!testSuite.isCompatibleWithCurrentRepository()) {
-            LOGGER.warn("Test suite {} not compatible with {}", new Object[] {testSuite.getClass().getSimpleName(), repoName});
+            LOGGER.warn("Test suite {} not compatible with {}", new Object[] {testSuite.getClass().getSimpleName(),
+                    testData.getRepositoryName()});
             return;
         }
 
-        LOGGER.info("Starting suite: {}[warmup #:{}, repeat#{}]", new Object[] {testSuiteClass.getSimpleName(),
-            runnerConfig.warmupCount, runnerConfig.repeatCount});
+        LOGGER.info("Starting suite: {}[warmup #:{}, repeat#{}]", new Object[] {
+                testSuiteClass.getSimpleName(), runnerConfig.warmupCount, runnerConfig.repeatCount});
         testSuite.setUp();
-        // warm up the suite
-        RecordableOperation<Void> testSuiteRun = new RecordableOperation<Void>(repoName,
-                                                                               testSuiteClass.getSimpleName(),
-                                                                               true,
-                                                                               runnerConfig.warmupCount) {
+        //warm up the suite
+        RecordableOperation<Void> testSuiteRun = new RecordableOperation<Void>(testSuiteClass.getSimpleName(), true,
+                runnerConfig.warmupCount) {
             @Override
             public Void call() throws Exception {
                 testSuite.run();
@@ -136,24 +121,22 @@ public final class PerformanceTestSuiteRunner {
         };
         testSuiteRun.run();
 
-        // run and record
+        //run and record
         testSuiteRun.setWarmup(false).setRepeatCount(runnerConfig.repeatCount).run();
         testSuite.tearDown();
     }
 
     private boolean isSuiteExcluded( Class<? extends AbstractPerformanceTestSuite> testSuiteClass ) {
-        // first search excluded list
+        //first search excluded list
         if (patternMatchesSuiteName(testSuiteClass, runnerConfig.excludeTestsRegExp)) {
             return true;
         }
-        // then search included list
-        return !runnerConfig.includeTestsRegExp.isEmpty()
-               && !patternMatchesSuiteName(testSuiteClass, runnerConfig.includeTestsRegExp);
+        //then search included list
+        return !runnerConfig.includeTestsRegExp.isEmpty() && !patternMatchesSuiteName(testSuiteClass, runnerConfig.includeTestsRegExp);
     }
 
-    private boolean patternMatchesSuiteName( Class<? extends AbstractPerformanceTestSuite> suiteClass,
-                                             List<String> patternsList ) {
-        for (Iterator<String> iterator = patternsList.iterator(); iterator.hasNext();) {
+    private boolean patternMatchesSuiteName( Class<? extends AbstractPerformanceTestSuite> suiteClass, List<String> patternsList ) {
+        for (Iterator<String> iterator = patternsList.iterator(); iterator.hasNext(); ) {
             String pattern = iterator.next();
             try {
                 if (Pattern.matches(pattern, suiteClass.getName()) || Pattern.matches(pattern, suiteClass.getSimpleName())) {
@@ -167,11 +150,10 @@ public final class PerformanceTestSuiteRunner {
         return false;
     }
 
-    private Repository initRepository( final RepositoryFactory repositoryFactory,
-                                       final Map<?, ?> repositoryConfigParams,
+    private Repository initRepository( final RepositoryFactory repositoryFactory, final Map repositoryConfigParams,
                                        final Credentials credentials ) throws Exception {
 
-        return new RecordableOperation<Repository>(repositoryFactory.getClass().getSimpleName(), "Initialization", false, 1) {
+        return new RecordableOperation<Repository>("Initialization", false, 1) {
             @Override
             public Repository call() throws Exception {
                 Repository repository = repositoryFactory.getRepository(repositoryConfigParams);
@@ -185,78 +167,59 @@ public final class PerformanceTestSuiteRunner {
     }
 
     private Set<Class<? extends AbstractPerformanceTestSuite>> loadPerformanceTestSuites() throws MalformedURLException {
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.addUrls(getRootUrlToScan());
-
+        ConfigurationBuilder builder = new ConfigurationBuilder()
+                .addUrls(ClasspathHelper.forPackage("org.modeshape"))
+                .setScanners(new TypesScanner())
+                .useParallelExecutor();
         Reflections reflections = new Reflections(builder);
         return reflections.getSubTypesOf(AbstractPerformanceTestSuite.class);
     }
 
-    private URL getRootUrlToScan() throws MalformedURLException {
-        String fullPackageName = this.getClass().getPackage().getName();
-        URL resourceUrl = getClass().getClassLoader().getResource(fullPackageName.replaceAll("\\.", "/"));
-        String urlString = resourceUrl.toExternalForm();
-        String jarIndicator = "!/";
-        if (urlString.contains(jarIndicator)) {
-            urlString = urlString.substring(0, urlString.indexOf(jarIndicator) + jarIndicator.length());
-        }
-        return new URL(urlString);
-    }
-
-    protected final TestData testData() {
-        return testData;
-    }
-
     /**
-     * Class which represents a recordable operation, depending on whether the warmup parameters is true or not. In case of
-     * warmup, no data is recorded.
-     * 
+     * Class which represents a recordable operation, depending on whether the warmup parameters is true or not. In case of warmup,
+     * no data is recorded.
+     *
      * @param <V> the result type of the operation
      */
     private abstract class RecordableOperation<V> implements Callable<V> {
-        private String repositoryName;
         private String name;
         private boolean warmup;
         private int repeatCount;
 
-        RecordableOperation( String repositoryName,
-                             String name,
-                             boolean warmup,
-                             int repeatCount ) {
-            this.repositoryName = repositoryName;
+        RecordableOperation(String name, boolean warmup, int repeatCount ) {
             this.name = name;
             this.warmup = warmup;
             this.repeatCount = repeatCount;
         }
 
-        RecordableOperation<V> setWarmup( boolean warmup ) {
+        RecordableOperation setWarmup( boolean warmup ) {
             this.warmup = warmup;
             return this;
         }
 
-        RecordableOperation<V> setRepeatCount( int repeatCount ) {
+        RecordableOperation setRepeatCount( int repeatCount ) {
             this.repeatCount = repeatCount;
             return this;
         }
 
         V run() throws Exception {
             V result = null;
-            String operationName = repositoryName + "#" + name;
             try {
                 for (int i = 0; i < repeatCount; i++) {
                     long start = System.nanoTime();
                     result = call();
                     long duration = System.nanoTime() - start;
                     if (!warmup) {
-                        testData().recordSuccess(operationName, duration);
+                        testData.recordSuccess(name, duration);
                     }
                 }
             } catch (Throwable throwable) {
                 if (!warmup) {
-                    testData().recordFailure(operationName, throwable);
+                    testData.recordFailure(name, throwable);
                 }
             }
             return result;
         }
     }
 }
+

@@ -7,14 +7,17 @@
 
     <groupId>org.modeshape</groupId>
     <artifactId>jcr-perf-tests</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${framework.version}</version>
 
     <properties>
-       <junit.version>4.8.2</junit.version>
-		<slf4j.api.version>1.6.1</slf4j.api.version>
-		<slf4j.log4j.version>1.6.1</slf4j.log4j.version>
-		<log4j.version>1.2.16</log4j.version>
-		<jcr.version>2.0</jcr.version>
+        <framework.version>1.0.0-SNAPSHOT</framework.version>
+
+        <junit.version>4.8.2</junit.version>
+        <slf4j.api.version>1.6.1</slf4j.api.version>
+        <slf4j.log4j.version>1.6.1</slf4j.log4j.version>
+        <log4j.version>1.2.16</log4j.version>
+        <jcr.version>2.0</jcr.version>
+        <reflections.version>0.9.5</reflections.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <surefire.debug></surefire.debug>
@@ -36,6 +39,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
@@ -50,7 +59,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
     <build>
         <resources>
@@ -68,8 +76,8 @@
 
         <plugins>
             <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
                     <enableAssertions>true</enableAssertions>
@@ -77,6 +85,16 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.3.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <modules>
@@ -84,6 +102,7 @@
         <module>jackrabbit-tests</module>
         <module>modeshape-2.x-tests</module>
         <module>modeshape-3.x-tests</module>
+        <module>perf-tests-report</module>
     </modules>
 
     <profiles>

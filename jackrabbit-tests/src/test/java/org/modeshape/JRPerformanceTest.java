@@ -18,40 +18,28 @@ package org.modeshape;
 
 import javax.jcr.SimpleCredentials;
 import org.apache.jackrabbit.commons.JcrUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.modeshape.jcr.perftests.PerformanceTestSuiteRunner;
-import org.modeshape.jcr.perftests.report.BarChartReport;
 import org.modeshape.jcr.perftests.report.TextFileReport;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Test which runs the performance suite against a Jackrabbit in memory repo.
+ * Test which runs the performance suite against a Jackrabbit in memory repository.
  *
  * @author Horia Chiorean
  */
 public class JRPerformanceTest {
 
-    private PerformanceTestSuiteRunner performanceTestSuiteRunner;
-
-    @Before
-    public void before() {
-        performanceTestSuiteRunner = new PerformanceTestSuiteRunner();
-    }
-
     @Test
     public void testJackrabbitInMemoryRepo() throws Exception {
+        PerformanceTestSuiteRunner performanceTestSuiteRunner = new PerformanceTestSuiteRunner("JackRabbit 2.x InMemory");
         Map<String, URL> parameters = new HashMap<String, URL>();
         parameters.put(JcrUtils.REPOSITORY_URI, getClass().getClassLoader().getResource("./"));
         performanceTestSuiteRunner.runPerformanceTests(parameters, new SimpleCredentials("test", "test".toCharArray()));
-    }
 
-    @After
-    public void after() throws Exception {
-        performanceTestSuiteRunner.generateTestReport(new TextFileReport());
-        performanceTestSuiteRunner.generateTestReport(new BarChartReport());
+        new TextFileReport(TimeUnit.SECONDS).generateReport(performanceTestSuiteRunner.getTestData());
     }
 }

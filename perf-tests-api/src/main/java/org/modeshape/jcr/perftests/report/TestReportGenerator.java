@@ -16,51 +16,35 @@
  */
 package org.modeshape.jcr.perftests.report;
 
+import org.modeshape.jcr.perftests.TestData;
 import java.io.File;
 import java.net.URISyntaxException;
-import java.util.concurrent.TimeUnit;
-import org.modeshape.jcr.perftests.TestData;
 
 /**
  * Base class which should be extended by classes which generate test reports based on a
  * {@link org.modeshape.jcr.perftests.TestData} object
- * 
+ *
  * @author Horia Chiorean
  */
 public abstract class TestReportGenerator {
 
-    /** the time unit to which test data values should be converted */
-    protected final TimeUnit timeUnit;
-
-    /**
-     * the name of the report file which will be written by default in the root of the current directory, from the point of view
-     * of the classloader
-     */
-    protected final String reportFileName;
-
-    public TestReportGenerator( String reportFileName,
-                                TimeUnit timeUnit ) {
-        this.timeUnit = timeUnit;
-        this.reportFileName = reportFileName;
-    }
-
     /**
      * Generates a report based on the provided test data
-     * 
+     *
      * @param testData a <code>TestData</code> instance which must be non-null.
      * @throws Exception if anything goes wrong during the report generation.
      */
     public abstract void generateReport( TestData testData ) throws Exception;
 
-    protected File getReportDir() throws URISyntaxException {
-        File reportDir = new File(getClass().getClassLoader().getResource(".").toURI());
-        if (!reportDir.exists() || !reportDir.isDirectory()) {
-            throw new IllegalStateException("Cannot locate target folder for performance report");
+    protected File getRootReportDir() {
+        try {
+            File reportDir = new File(getClass().getClassLoader().getResource(".").toURI());
+            if (!reportDir.exists() || !reportDir.isDirectory()) {
+                throw new IllegalStateException("Cannot locate target folder for performance report");
+            }
+            return reportDir;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
-        return reportDir;
-    }
-
-    protected File getReportFile() throws URISyntaxException {
-        return new File(getReportDir(), reportFileName);
     }
 }

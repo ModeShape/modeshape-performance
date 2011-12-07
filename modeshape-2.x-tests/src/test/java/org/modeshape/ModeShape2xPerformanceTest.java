@@ -23,12 +23,12 @@ import org.modeshape.jcr.JcrRepositoryFactory;
 import org.modeshape.jcr.perftests.PerformanceTestSuiteRunner;
 import org.modeshape.jcr.perftests.RunnerConfiguration;
 import org.modeshape.jcr.perftests.read.ConcurrentReadTestSuite;
-import org.modeshape.jcr.perftests.report.BarChartReport;
 import org.modeshape.jcr.perftests.report.TextFileReport;
 import org.modeshape.jcr.perftests.write.ConcurrentReadWriteTestSuite;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Runs the performance tests against a Modeshape 2.x repo.
@@ -37,27 +37,24 @@ import java.util.Map;
  */
 public class ModeShape2xPerformanceTest {
 
-    private PerformanceTestSuiteRunner performanceTestSuiteRunner;
+    private RunnerConfiguration runnerConfig;
 
     @Before
     public void before() {
         //TODO author=Horia Chiorean date=11/22/11 description=some tests excluded because of various problems
-        RunnerConfiguration runnerConfig = new RunnerConfiguration().addTestsToExclude(
+        runnerConfig = new RunnerConfiguration().addTestsToExclude(
                 ConcurrentReadTestSuite.class.getSimpleName(),//deadlock
                 ConcurrentReadWriteTestSuite.class.getSimpleName());//deadlock
-        performanceTestSuiteRunner = new PerformanceTestSuiteRunner(runnerConfig);
     }
 
     @Test
     public void testModeShapeInMemory() throws Exception {
+        PerformanceTestSuiteRunner performanceTestSuiteRunner = new PerformanceTestSuiteRunner("ModeShape 2.x InMemory", runnerConfig);
         Map<String, URL> parameters = new HashMap<String, URL>();
         parameters.put(JcrRepositoryFactory.URL, getClass().getClassLoader().getResource("configRepository.xml"));
         performanceTestSuiteRunner.runPerformanceTests(parameters, null);
+
+        new TextFileReport(TimeUnit.SECONDS).generateReport(performanceTestSuiteRunner.getTestData());
     }
 
-    @After
-    public void after() throws Exception {
-        performanceTestSuiteRunner.generateTestReport(new TextFileReport());
-        performanceTestSuiteRunner.generateTestReport(new BarChartReport());
-    }
 }

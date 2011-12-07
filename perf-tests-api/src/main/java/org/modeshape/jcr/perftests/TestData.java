@@ -30,10 +30,16 @@ public final class TestData {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestData.class);
 
     /** Map [test name, [test duration 1(ms), test duration 2(ms)]] */
-    private Map<String, List<Long>> durationsMap = new TreeMap<String, List<Long>>();
+    private final Map<String, List<Long>> durationsMap = new TreeMap<String, List<Long>>();
 
     /** List of the names of the operations that have failed */
-    private Set<String> failedTests = new TreeSet<String>();
+    private final Set<String> failedTests = new TreeSet<String>();
+
+    private final String repositoryName;
+
+    public TestData( String repositoryName ) {
+        this.repositoryName = repositoryName;
+    }
 
     void recordSuccess( String operationName, long durationNanos ) {
         LOGGER.info("{} : {} (ns)", new Object[] {operationName, durationNanos});
@@ -66,5 +72,9 @@ public final class TestData {
             Collections.emptyList();
         }
         return Collections.unmodifiableList(durationsMap.get(testName));
+    }
+
+    public String getRepositoryName() {
+        return repositoryName;
     }
 }

@@ -26,6 +26,7 @@ The general idea is to keep your 'master' branch in-sync with the 'upstream/mast
 The framework is a multi-module Maven project, as follows:
 
     * perf-tests-api - contains the main framework API and in terms of repository dependencies, should only depend on the javax.jcr package
+    * perf-tests-report - contains the code which produces aggregated reports, comparing the runs across all the repositories
     * jackrabbit-tests - contains the test code which runs the performance tests against a [JackRabbit](http://jackrabbit.apache.org) repository
     * modeshape-2.x-tests - contains the test code which runs the performance tests against a [ModeShape 2.x] (http://www.jboss.org/modeshape) repository
     * modeshape-3.x-tests - contains the test code which runs the performance tests against a [ModeShape 3.x] (http://www.jboss.org/modeshape) repository
@@ -37,17 +38,14 @@ ones above, which contains the test code and the appropriate dependencies.
 ## Usage
 
 To use the framework in its current version, you need to use Maven (2.x or greater). Once you have the source code, all you need
-to run is `mvn test` either from the parent module (which means that all the tests against all the repositories will be run)
-or from any of the submodules which test a particular repository.
+to run is `mvn clean install` from the parent module (which means that all the tests against all the repositories will be run).
 
 ### Reporting
 
 Once the test have been run, the following reports are generated:
 
     * <module-name>/target/test-classes/perf-report.txt - a plain text file, which contains some statistical information (5 number summary and standard deviation) for each test run
-    * <module-name>/target/test-classes/barchart.html (experimental) - a HTML file which uses [Google Charts] (http://code.google.com/apis/chart/) to produce a simple barchart with the same
-    statistical information as above. At the moment, this report is only generated for the modeshape-2.x-tests module and will
-    probably change in the future
+    * perf-tests-report/target/test-classes/google-box-chart.html - an HTML which displays box charts using Google Charts API
 
 ## Tests
 
