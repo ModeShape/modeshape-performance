@@ -15,18 +15,8 @@
 
 package org.modeshape.report;
 
-import freemarker.cache.URLTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.modeshape.jcr.perftests.StatisticalData;
-import org.modeshape.jcr.perftests.util.DurationsConverter;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -37,79 +27,44 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Horia Chiorean
  */
-public final class GoogleBoxChartReport {
+public final class GoogleBoxChartReport extends SingleAggregatedReport {
+
+    private static final Map<String, String> REPOSITORY_COLOR_MAP = new HashMap<String, String>();
 
     private static final Random RANDOM = new Random();
-    private static final Configuration FREEMARKER_CONFIG;
-    private static final String REPORT_NAME = "google-box-chart.html";
-    private static final String TEMPLATE_NAME = "google-box-chart-template.ftl";
+    private static final String REPORT_NAME = "google/google-box-chart.html";
+    private static final String TEMPLATE_NAME = "google/google-box-chart-template.ftl";
 
-    private final TimeUnit timeUnit;
-
-    static {
-        FREEMARKER_CONFIG = new Configuration();
-        FREEMARKER_CONFIG.setDefaultEncoding("UTF-8");
-        FREEMARKER_CONFIG.setTemplateLoader(new URLTemplateLoader() {
-            @Override
-            protected URL getURL( String name ) {
-                return this.getClass().getClassLoader().getResource(name);
-            }
-        });
-        FREEMARKER_CONFIG.setWhitespaceStripping(true);
-    }
-
-    public GoogleBoxChartReport( TimeUnit timeUnit ) {
-        this.timeUnit = timeUnit;
-    }
-
-    public void generateReport() throws Exception {
-        Map<String, String> chartsMap = createChartsMap();
-        generateReport(chartsMap);
-    }
-
-    private void generateReport( Map<String, String> chartsMap ) throws IOException, TemplateException {
-        Template reportTemplate = FREEMARKER_CONFIG.getTemplate(TEMPLATE_NAME);
-        Map<String, Object> templateMap = new HashMap<String, Object>();
-        templateMap.put("chartsMap", chartsMap);
-        templateMap.put("timeUnit", timeUnit);
-        reportTemplate.process(templateMap, new PrintWriter(getReportFile()));
-    }
-
-    private Map<String, String> createChartsMap() throws Exception {
-        Map<String, String> chartsMap = new HashMap<String, String>();
-
-        Map<String, Map<String, List<Long>>> testDataMap = new ReportDataAggregator().loadPerformanceData();
-        for (String testName : testDataMap.keySet()) {
-            GoogleBoxChart chart = createChartForTest(testName, testDataMap.get(testName));
-            chartsMap.put(testName, chart.toUrl());
+    @Override
+    Map<String, ?> getTemplateModel( Map<String, Map<String, List<Double>>> aggregateDataMap, TimeUnit timeUnit ) {
+        Map<String, String> chartUrlsMap = new HashMap<String, String>();
+        for (String testName : aggregateDataMap.keySet()) {
+            GoogleBoxChart chart = createChartForTest(testName, aggregateDataMap.get(testName), timeUnit);
+            chartUrlsMap.put(testName, chart.toUrl());
         }
-        return chartsMap;
+        Map<String, Object> templateModel = new HashMap<String, Object>();
+        templateModel.put("chartUrlsMap", chartUrlsMap);
+        templateModel.put("title", "Performance Report");
+        return templateModel;
     }
 
-    private GoogleBoxChart createChartForTest( String testName, Map<String, List<Long>> repositoriesWithDurations ) {
+    @Override
+    String getReportFilename() {
+        return REPORT_NAME;
+    }
+
+    @Override
+    String getTemplateFilename() {
+        return TEMPLATE_NAME;
+    }
+
+    private GoogleBoxChart createChartForTest( String testName, Map<String, List<Double>> repositoriesValuesMap, TimeUnit timeUnit ) {
         GoogleBoxChart boxChart = new GoogleBoxChart(400, 500, testName + "(" + timeUnit.toString().toLowerCase() + ")");
-        for (String repositoryName : repositoriesWithDurations.keySet()) {
-            List<Double> convertedDurations = DurationsConverter.convertFromNanos(repositoriesWithDurations.get(repositoryName), timeUnit);
-            boxChart.addDataForRepository(repositoryName, convertedDurations);
+        for (String repositoryName : repositoriesValuesMap.keySet()) {
+            boxChart.addDataForRepository(repositoryName, repositoriesValuesMap.get(repositoryName));
         }
         boxChart.generateChartValues();
         return boxChart;
-    }
-
-    private File getReportFile() {
-        return new File(getRootReportDir(), REPORT_NAME);
-    }
-
-    private File getRootReportDir() {
-        try {
-            File reportDir = new File(getClass().getClassLoader().getResource(".").toURI());
-            if (!reportDir.exists() || !reportDir.isDirectory()) {
-                throw new IllegalStateException("Cannot locate target folder for performance report");
-            }
-            return reportDir;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private static String colorHex( Color color ) {
@@ -120,9 +75,8 @@ public final class GoogleBoxChartReport {
         return colorHex(new Color(RANDOM.nextInt(256), RANDOM.nextInt(256), RANDOM.nextInt(256)));
     }
 
-    private static class GoogleBoxChart {
+    private class GoogleBoxChart {
 
-        private static final Map<String, String> REPOSITORY_COLOR_MAP = new HashMap<String, String>();
         private static final String MULTI_VALUE_SEPARATOR = ",";
         private static final String SERIES_SEPARATOR = "|";
         private static final String CHART_BOUNDARY_GUARD = "-1";

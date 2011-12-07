@@ -15,20 +15,24 @@
 
 package org.modeshape.report;
 
-import org.junit.Test;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Test which invokes the {@link GoogleBoxChartReport} and the {@link BoxPlotReport} class in order to generate
- * some box charts with the comparative test data for each repository.
+ * Base class for report generators which generate just 1 report for all the test classes.
  *
  * @author Horia Chiorean
+ * @see GoogleBoxChartReport
  */
-public class AggregatedReportTest {
+public abstract class SingleAggregatedReport {
 
-    @Test
-    public void generateReports() throws Exception {
-        new GoogleBoxChartReport().generate(TimeUnit.MILLISECONDS);
-        new BoxPlotReport().generate(TimeUnit.MILLISECONDS);
+    public void generate(TimeUnit timeUnit) throws Exception {
+        Map<String, ?> templateModel = getTemplateModel(new ReportDataAggregator().loadPerformanceData(timeUnit), timeUnit);
+        new FreemarkerTemplateProcessor(getReportFilename(), getTemplateFilename()).processTemplate(templateModel);
     }
+
+    abstract String getReportFilename();
+    abstract String getTemplateFilename();
+    abstract Map<String, ?> getTemplateModel( Map<String, Map<String, List<Double>>> aggregateDataMap, TimeUnit timeUnit );
 }

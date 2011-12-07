@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jcr-perf-tests</artifactId>
         <groupId>org.modeshape</groupId>
-        <version>${framework.version}</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>perf-tests-api</artifactId>
-            <version>${framework.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -33,21 +33,21 @@
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-2.x-tests</artifactId>
-            <version>${framework.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
             <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-3.x-tests</artifactId>
-            <version>${framework.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
             <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>jackrabbit-tests</artifactId>
-            <version>${framework.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
             <type>test-jar</type>
         </dependency>
 

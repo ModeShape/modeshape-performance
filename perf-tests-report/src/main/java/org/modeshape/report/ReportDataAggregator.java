@@ -16,6 +16,7 @@
 package org.modeshape.report;
 
 import org.modeshape.jcr.perftests.report.CsvReport;
+import org.modeshape.jcr.perftests.util.DurationsConverter;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class which loads all the .csv files from the classpath which are expected to contain performance reports.
@@ -41,7 +43,7 @@ public final class ReportDataAggregator {
      *
      * @throws Exception if anything fails
      */
-     Map<String, Map<String, List<Long>>> loadPerformanceData() throws Exception {
+     Map<String, Map<String, List<Double>>> loadPerformanceData(TimeUnit convertToUnit) throws Exception {
         Map<String, Map<String, List<Long>>> testToRepositoryDurationsMap = new TreeMap<String, Map<String, List<Long>>>();
         ConfigurationBuilder builder = new ConfigurationBuilder()
                 .setUrls(ClasspathHelper.forPackage(CsvReport.REPORT_PARENT_DIR))
@@ -54,7 +56,7 @@ public final class ReportDataAggregator {
             processReport(reportFileName, testToRepositoryDurationsMap);
         }
 
-        return testToRepositoryDurationsMap;
+        return convertToTimeUnit(testToRepositoryDurationsMap, convertToUnit);
     }
 
     private void processReport( String reportFileName, Map<String, Map<String, List<Long>>> testToRepositoryDurationsMap ) throws IOException, URISyntaxException {
@@ -92,5 +94,19 @@ public final class ReportDataAggregator {
         for (String duration : durationsString.split(",")) {
             durations.add(Long.valueOf(duration));
         }
+    }
+
+    private Map<String, Map<String, List<Double>>> convertToTimeUnit( Map<String, Map<String, List<Long>>> aggregateDataMap, TimeUnit timeUnit ) {
+        Map<String, Map<String, List<Double>>> convertedMap = new TreeMap<String, Map<String, List<Double>>>();
+        for (String testName : aggregateDataMap.keySet()) {
+            Map<String, List<Long>> repositoriesValuesMap = aggregateDataMap.get(testName);
+            Map<String, List<Double>> convertedRepositoriesValuesMap = new TreeMap<String, List<Double>>();
+            for (String repositoryName : repositoriesValuesMap.keySet()) {
+                List<Double> convertedDurations = DurationsConverter.convertFromNanos(repositoriesValuesMap.get(repositoryName), timeUnit);
+                convertedRepositoriesValuesMap.put(repositoryName, convertedDurations);
+            }
+            convertedMap.put(testName, convertedRepositoriesValuesMap);
+        }
+        return convertedMap;
     }
 }

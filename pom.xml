@@ -7,11 +7,10 @@
 
     <groupId>org.modeshape</groupId>
     <artifactId>jcr-perf-tests</artifactId>
-    <version>${framework.version}</version>
+    <version>1.0.0-SNAPSHOT</version>
+
 
     <properties>
-        <framework.version>1.0.0-SNAPSHOT</framework.version>
-
         <junit.version>4.8.2</junit.version>
         <slf4j.api.version>1.6.1</slf4j.api.version>
         <slf4j.log4j.version>1.6.1</slf4j.log4j.version>
