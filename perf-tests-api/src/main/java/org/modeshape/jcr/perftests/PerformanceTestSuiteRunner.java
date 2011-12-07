@@ -48,13 +48,17 @@ public final class PerformanceTestSuiteRunner {
     private final TestData testData;
     private final RunnerConfiguration runnerConfig;
 
-    /** Creates a new default test runner instance, which loads its properties from a file called "runner.properties" in the classpath. */
-    public PerformanceTestSuiteRunner(String repositoryName) {
+    /**
+     * Creates a new default test runner instance, which loads its properties from a file called "runner.properties" in the classpath.
+     */
+    public PerformanceTestSuiteRunner( String repositoryName ) {
         this(repositoryName, new RunnerConfiguration());
     }
 
-    /** Creates a new runner instance passing a custom config. */
-    public PerformanceTestSuiteRunner( String repositoryName, RunnerConfiguration runnerConfig) {
+    /**
+     * Creates a new runner instance passing a custom config.
+     */
+    public PerformanceTestSuiteRunner( String repositoryName, RunnerConfiguration runnerConfig ) {
         this.testData = new TestData(repositoryName);
         this.runnerConfig = runnerConfig;
     }
@@ -63,10 +67,12 @@ public final class PerformanceTestSuiteRunner {
      * Uses the given map of parameters together with the <code>ServiceLoader</code> mechanism to get all the <code>RepositoryFactory</code>
      * instances and the subsequent repositories against which the tests will be run.
      *
-     * @param repositoryConfigParams a map of config params {@see {@link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}}
+     * @param repositoryConfigParams a map of config params {@see @link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}
      * @param credentials a set of credentials which may be needed by a certain repo to run. It can be null.
+     * @throws Exception if anything unexpected happens during the run. In case there are test exceptions, those will just be logged
+     * and the suite will continue to run.
      */
-    public void runPerformanceTests( Map repositoryConfigParams, Credentials credentials ) throws Exception {
+    public void runPerformanceTests( Map<?, ?> repositoryConfigParams, Credentials credentials ) throws Exception {
         for (RepositoryFactory repositoryFactory : ServiceLoader.load(RepositoryFactory.class)) {
             Repository repository = initRepository(repositoryFactory, repositoryConfigParams, credentials);
             if (repository == null) {
@@ -110,9 +116,9 @@ public final class PerformanceTestSuiteRunner {
         LOGGER.info("Starting suite: {}[warmup #:{}, repeat#{}]", new Object[] {
                 testSuiteClass.getSimpleName(), runnerConfig.warmupCount, runnerConfig.repeatCount});
         testSuite.setUp();
-        //warm up the suite
+        // warm up the suite
         RecordableOperation<Void> testSuiteRun = new RecordableOperation<Void>(testSuiteClass.getSimpleName(), true,
-                runnerConfig.warmupCount) {
+                                                                               runnerConfig.warmupCount) {
             @Override
             public Void call() throws Exception {
                 testSuite.run();
@@ -121,17 +127,17 @@ public final class PerformanceTestSuiteRunner {
         };
         testSuiteRun.run();
 
-        //run and record
+        // run and record
         testSuiteRun.setWarmup(false).setRepeatCount(runnerConfig.repeatCount).run();
         testSuite.tearDown();
     }
 
     private boolean isSuiteExcluded( Class<? extends AbstractPerformanceTestSuite> testSuiteClass ) {
-        //first search excluded list
+        // first search excluded list
         if (patternMatchesSuiteName(testSuiteClass, runnerConfig.excludeTestsRegExp)) {
             return true;
         }
-        //then search included list
+        // then search included list
         return !runnerConfig.includeTestsRegExp.isEmpty() && !patternMatchesSuiteName(testSuiteClass, runnerConfig.includeTestsRegExp);
     }
 
@@ -150,7 +156,7 @@ public final class PerformanceTestSuiteRunner {
         return false;
     }
 
-    private Repository initRepository( final RepositoryFactory repositoryFactory, final Map repositoryConfigParams,
+    private Repository initRepository( final RepositoryFactory repositoryFactory, final Map<?, ?> repositoryConfigParams,
                                        final Credentials credentials ) throws Exception {
 
         return new RecordableOperation<Repository>("Initialization", false, 1) {
@@ -186,18 +192,18 @@ public final class PerformanceTestSuiteRunner {
         private boolean warmup;
         private int repeatCount;
 
-        RecordableOperation(String name, boolean warmup, int repeatCount ) {
+        RecordableOperation( String name, boolean warmup, int repeatCount ) {
             this.name = name;
             this.warmup = warmup;
             this.repeatCount = repeatCount;
         }
 
-        RecordableOperation setWarmup( boolean warmup ) {
+        RecordableOperation<V> setWarmup( boolean warmup ) {
             this.warmup = warmup;
             return this;
         }
 
-        RecordableOperation setRepeatCount( int repeatCount ) {
+        RecordableOperation<V> setRepeatCount( int repeatCount ) {
             this.repeatCount = repeatCount;
             return this;
         }
