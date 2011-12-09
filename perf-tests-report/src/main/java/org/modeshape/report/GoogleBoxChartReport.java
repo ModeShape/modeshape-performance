@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class GoogleBoxChartReport extends SingleAggregatedReport {
 
-    private static final Map<String, String> REPOSITORY_COLOR_MAP = new HashMap<String, String>();
+    protected static final Map<String, String> REPOSITORY_COLOR_MAP = new HashMap<String, String>();
 
     private static final Random RANDOM = new Random();
     private static final String REPORT_NAME = "google/google-box-chart.html";
@@ -67,11 +67,11 @@ public final class GoogleBoxChartReport extends SingleAggregatedReport {
         return boxChart;
     }
 
-    private static String colorHex( Color color ) {
+    protected static String colorHex( Color color ) {
         return Integer.toHexString((color.getRGB() & 0xffffff) | 0x1000000).substring(1).toUpperCase();
     }
 
-    private static String randomColorHex() {
+    protected static String randomColorHex() {
         return colorHex(new Color(RANDOM.nextInt(256), RANDOM.nextInt(256), RANDOM.nextInt(256)));
     }
 
@@ -104,7 +104,7 @@ public final class GoogleBoxChartReport extends SingleAggregatedReport {
             repositoryData.put(repositoryName, new StatisticalData(values));
         }
 
-        private void generateChartValues() {
+        protected void generateChartValues() {
             int seriesIndex = 1;
             for (Iterator<String> it = repositoryData.keySet().iterator(); it.hasNext(); ) {
                 String repositoryName = it.next();

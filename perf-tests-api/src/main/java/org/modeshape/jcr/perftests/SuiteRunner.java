@@ -16,6 +16,14 @@
  */
 package org.modeshape.jcr.perftests;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import javax.jcr.Credentials;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryFactory;
@@ -26,13 +34,9 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.net.MalformedURLException;
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
+ * 
  * Class which runs a set of test suites against all the JCR repositories which are found in the classpath. The <code>ServiceLoader</code>
  * mechanism is used for scanning the <code>RepositoryFactory</code> instances.
  *
@@ -50,6 +54,8 @@ public final class SuiteRunner {
 
     /**
      * Creates a new default test runner instance, which loads its properties from a file called "runner.properties" in the classpath.
+     * 
+     * @param repositoryName the repository name
      */
     public SuiteRunner( String repositoryName ) {
         this(repositoryName, new RunnerCfg());
@@ -57,6 +63,9 @@ public final class SuiteRunner {
 
     /**
      * Creates a new runner instance passing a custom config.
+     * 
+     * @param repositoryName the repository name
+     * @param runnerConfig the runner configuration
      */
     public SuiteRunner( String repositoryName, RunnerCfg runnerConfig ) {
         this.testData = new TestData(repositoryName);
@@ -67,7 +76,7 @@ public final class SuiteRunner {
      * Uses the given map of parameters together with the <code>ServiceLoader</code> mechanism to get all the <code>RepositoryFactory</code>
      * instances and the subsequent repositories against which the tests will be run.
      *
-     * @param repositoryConfigParams a map of config params {@see @link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}
+     * @param repositoryConfigParams a map of config params {@link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}
      * @param credentials a set of credentials which may be needed by a certain repo to run. It can be null.
      * @throws Exception if anything unexpected happens during the run. In case there are test exceptions, those will just be logged
      * and the suite will continue to run.
@@ -172,7 +181,7 @@ public final class SuiteRunner {
         }.run();
     }
 
-    private Set<Class<? extends AbstractPerformanceTestSuite>> loadPerformanceTestSuites() throws MalformedURLException {
+    private Set<Class<? extends AbstractPerformanceTestSuite>> loadPerformanceTestSuites() {
         ConfigurationBuilder builder = new ConfigurationBuilder()
                 .addUrls(ClasspathHelper.forPackage("org.modeshape"))
                 .setScanners(new TypesScanner())
@@ -216,12 +225,12 @@ public final class SuiteRunner {
                     result = call();
                     long duration = System.nanoTime() - start;
                     if (!warmup) {
-                        testData.recordSuccess(name, duration);
+                        getTestData().recordSuccess(name, duration);
                     }
                 }
             } catch (Throwable throwable) {
                 if (!warmup) {
-                    testData.recordFailure(name, throwable);
+                    getTestData().recordFailure(name, throwable);
                 }
             }
             return result;

@@ -24,7 +24,6 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -38,9 +37,10 @@ public final class ReportDataAggregator {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ReportDataAggregator.class);
 
     /**
-     * Loads all the performance data by scanning the classpath for csv files under the {@link CsvReport.REPORT_PARENT_DIR} location.
+     * Loads all the performance data by scanning the classpath for csv files under the {@link CsvReport#REPORT_PARENT_DIR} location.
      * @return a map of the form - [test, [repository name, (duration ns 1, duration ns 2...)]]
      *
+     *@param convertToUnit the unit to which the performance data should be converted
      * @throws Exception if anything fails
      */
      Map<String, Map<String, List<Double>>> loadPerformanceData(TimeUnit convertToUnit) throws Exception {
@@ -59,7 +59,7 @@ public final class ReportDataAggregator {
         return convertToTimeUnit(testToRepositoryDurationsMap, convertToUnit);
     }
 
-    private void processReport( String reportFileName, Map<String, Map<String, List<Long>>> testToRepositoryDurationsMap ) throws IOException, URISyntaxException {
+    private void processReport( String reportFileName, Map<String, Map<String, List<Long>>> testToRepositoryDurationsMap ) throws IOException {
         Properties reportProperties = new Properties();
         reportProperties.load(getClass().getClassLoader().getResourceAsStream(reportFileName));
         String repositoryName = reportProperties.getProperty(CsvReport.REPOSITORY_PROPERTY);
