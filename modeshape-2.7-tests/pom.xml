@@ -9,10 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jackrabbit-tests</artifactId>
-    <description>JackRabbit repository performance tests</description>
+    <artifactId>modeshape-2.7-tests</artifactId>
+    <description>ModeShape 2.7 repository performance tests</description>
+
     <properties>
-        <jackrabbit.version>2.3.2</jackrabbit.version>
+        <modeshape.version>2.7-SNAPSHOT</modeshape.version>
     </properties>
 
     <dependencies>
@@ -23,9 +24,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.jackrabbit</groupId>
-            <artifactId>jackrabbit-core</artifactId>
-            <version>${jackrabbit.version}</version>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jcr</artifactId>
+            <version>${modeshape.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -52,4 +53,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

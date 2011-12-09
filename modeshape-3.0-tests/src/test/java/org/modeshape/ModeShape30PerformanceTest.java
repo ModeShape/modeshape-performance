@@ -16,10 +16,10 @@
  */
 package org.modeshape;
 
-import javax.jcr.SimpleCredentials;
-import org.apache.jackrabbit.commons.JcrUtils;
 import org.junit.Test;
+import org.modeshape.jcr.JcrRepositoryFactory;
 import org.modeshape.jcr.perftests.SuiteRunner;
+import org.modeshape.jcr.perftests.RunnerCfg;
 import org.modeshape.jcr.perftests.report.TextFileReport;
 import java.net.URL;
 import java.util.HashMap;
@@ -27,18 +27,20 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Test which runs the performance suite against a Jackrabbit in memory repository.
+ * Runs the performance tests against a Modeshape 3.x repo.
  *
  * @author Horia Chiorean
  */
-public class JRPerformanceTest {
+public class ModeShape30PerformanceTest {
 
     @Test
-    public void testJackrabbitInMemoryRepo() throws Exception {
-        SuiteRunner performanceTestSuiteRunner = new SuiteRunner("JackRabbit 2.x InMemory");
+    public void testModeShapeInMemory() throws Exception {
+        // see https://issues.jboss.org/browse/MODE-1346
+        SuiteRunner performanceTestSuiteRunner =
+                new SuiteRunner("ModeShape 3.x InMemory", new RunnerCfg().addTestsToExclude("BigFileReadTestSuite", "BigFileWriteTestSuite"));
         Map<String, URL> parameters = new HashMap<String, URL>();
-        parameters.put(JcrUtils.REPOSITORY_URI, getClass().getClassLoader().getResource("./"));
-        performanceTestSuiteRunner.runPerformanceTests(parameters, new SimpleCredentials("test", "test".toCharArray()));
+        parameters.put(JcrRepositoryFactory.URL, getClass().getClassLoader().getResource("configRepository.json"));
+        performanceTestSuiteRunner.runPerformanceTests(parameters, null);
 
         new TextFileReport(TimeUnit.SECONDS).generateReport(performanceTestSuiteRunner.getTestData());
     }

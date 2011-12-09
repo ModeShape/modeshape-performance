@@ -36,15 +36,16 @@ import java.util.concurrent.TimeUnit;
  */
 public final class TextFileReport extends TestReportGenerator {
 
-    private static final String DEFAULT_REPORT_FILENAME = "perf-report.txt";
+    private final File reportFile;
+    private final TimeUnit timeUnit;
 
-    public TextFileReport(  ) {
-        super(DEFAULT_REPORT_FILENAME, TimeUnit.SECONDS);
+    public TextFileReport( TimeUnit timeUnit ) {
+        this.reportFile = new File(getRootReportDir(), "perf-report.txt");
+        this.timeUnit = timeUnit;
     }
 
     @Override
     public void generateReport( TestData testData ) throws Exception {
-        File reportFile = getReportFile();
         PrintStream ps = new PrintStream(new FileOutputStream(reportFile, true));
         try {
             printHeader(ps);

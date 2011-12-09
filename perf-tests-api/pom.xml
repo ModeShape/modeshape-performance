@@ -16,9 +16,9 @@
         <tests.exclude></tests.exclude>
         <!--By default, all are included-->
         <tests.include></tests.include>
-        <repeat.count>5</repeat.count>
+        <repeat.count>10</repeat.count>
         <warmup.count>5</warmup.count>
-        <testsuite.config.nodeCount>10</testsuite.config.nodeCount>
+        <testsuite.config.nodeCount>40</testsuite.config.nodeCount>
     </properties>
 
     <dependencies>
@@ -30,19 +30,12 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.9.5</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math</artifactId>
             <version>2.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <version>2.3.18</version>
         </dependency>
 
         <dependency>
