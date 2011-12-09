@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.Map;
 
 /**
@@ -41,6 +42,7 @@ final class FreemarkerTemplateProcessor {
     static {
         FREEMARKER_CONFIG = new Configuration();
         FREEMARKER_CONFIG.setDefaultEncoding("UTF-8");
+        FREEMARKER_CONFIG.setNumberFormat("0.######");
         FREEMARKER_CONFIG.setTemplateLoader(new URLTemplateLoader() {
             @Override
             protected URL getURL( String name ) {
@@ -74,5 +76,9 @@ final class FreemarkerTemplateProcessor {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void main( String[] args ) {
+        System.out.println(new DecimalFormat("0.######").format(1124.333));
     }
 }

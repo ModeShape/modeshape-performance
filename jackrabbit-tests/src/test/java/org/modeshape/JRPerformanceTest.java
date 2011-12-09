@@ -19,7 +19,7 @@ package org.modeshape;
 import javax.jcr.SimpleCredentials;
 import org.apache.jackrabbit.commons.JcrUtils;
 import org.junit.Test;
-import org.modeshape.jcr.perftests.PerformanceTestSuiteRunner;
+import org.modeshape.jcr.perftests.SuiteRunner;
 import org.modeshape.jcr.perftests.report.TextFileReport;
 import java.net.URL;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class JRPerformanceTest {
 
     @Test
     public void testJackrabbitInMemoryRepo() throws Exception {
-        PerformanceTestSuiteRunner performanceTestSuiteRunner = new PerformanceTestSuiteRunner("JackRabbit 2.x InMemory");
+        SuiteRunner performanceTestSuiteRunner = new SuiteRunner("JackRabbit 2.x InMemory");
         Map<String, URL> parameters = new HashMap<String, URL>();
         parameters.put(JcrUtils.REPOSITORY_URI, getClass().getClassLoader().getResource("./"));
         performanceTestSuiteRunner.runPerformanceTests(parameters, new SimpleCredentials("test", "test".toCharArray()));

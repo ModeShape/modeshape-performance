@@ -16,29 +16,44 @@
  */
 package org.modeshape;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.modeshape.jcr.JcrRepositoryFactory;
-import org.modeshape.jcr.perftests.PerformanceTestSuiteRunner;
+import org.modeshape.jcr.perftests.SuiteRunner;
+import org.modeshape.jcr.perftests.RunnerCfg;
+import org.modeshape.jcr.perftests.read.ConcurrentReadTestSuite;
 import org.modeshape.jcr.perftests.report.TextFileReport;
+import org.modeshape.jcr.perftests.write.ConcurrentReadWriteTestSuite;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Runs the performance tests against a Modeshape 3.x repo.
+ * Runs the performance tests against a Modeshape 2.x repo.
  *
  * @author Horia Chiorean
  */
-public class ModeShape3xPerformanceTest {
+public class ModeShape27PerformanceTest {
+
+    private RunnerCfg runnerConfig;
+
+    @Before
+    public void before() {
+        //TODO author=Horia Chiorean date=11/22/11 description=some tests excluded because of various problems
+        runnerConfig = new RunnerCfg().addTestsToExclude(
+                ConcurrentReadTestSuite.class.getSimpleName(),//deadlock
+                ConcurrentReadWriteTestSuite.class.getSimpleName());//deadlock
+    }
 
     @Test
     public void testModeShapeInMemory() throws Exception {
-        PerformanceTestSuiteRunner performanceTestSuiteRunner = new PerformanceTestSuiteRunner("ModeShape 3.x InMemory");
+        SuiteRunner performanceTestSuiteRunner = new SuiteRunner("ModeShape 2.x InMemory", runnerConfig);
         Map<String, URL> parameters = new HashMap<String, URL>();
-        parameters.put(JcrRepositoryFactory.URL, getClass().getClassLoader().getResource("configRepository.json"));
+        parameters.put(JcrRepositoryFactory.URL, getClass().getClassLoader().getResource("configRepository.xml"));
         performanceTestSuiteRunner.runPerformanceTests(parameters, null);
 
         new TextFileReport(TimeUnit.SECONDS).generateReport(performanceTestSuiteRunner.getTestData());
     }
+
 }

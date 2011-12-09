@@ -80,7 +80,7 @@
                 <version>2.10</version>
                 <configuration>
                     <enableAssertions>true</enableAssertions>
-                    <argLine>-Xmx1024M ${surefire.debug}</argLine>
+                    <argLine>-Xmx1524M -XX:PermSize=256m ${surefire.debug}</argLine>
                 </configuration>
             </plugin>
         </plugins>
@@ -99,8 +99,8 @@
     <modules>
         <module>perf-tests-api</module>
         <module>jackrabbit-tests</module>
-        <module>modeshape-2.x-tests</module>
-        <module>modeshape-3.x-tests</module>
+        <module>modeshape-2.7-tests</module>
+        <module>modeshape-3.0-tests</module>
         <module>perf-tests-report</module>
     </modules>
 

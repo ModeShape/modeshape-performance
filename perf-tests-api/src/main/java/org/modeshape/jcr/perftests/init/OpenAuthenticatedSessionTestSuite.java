@@ -22,7 +22,7 @@ import org.modeshape.jcr.perftests.SuiteConfiguration;
 /**
  * Test which opens a {@link OpenAuthenticatedSessionTestSuite#SESSIONS_COUNT} number of authenticated sessions on a repository.
  * The credentials used by this test are those provided to the runner configuration
- * {@link org.modeshape.jcr.perftests.RunnerConfiguration}.
+ * {@link org.modeshape.jcr.perftests.RunnerCfg}.
  * 
  * @author Horia Chiorean
  */

@@ -16,45 +16,32 @@
  */
 package org.modeshape;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.modeshape.jcr.JcrRepositoryFactory;
-import org.modeshape.jcr.perftests.PerformanceTestSuiteRunner;
-import org.modeshape.jcr.perftests.RunnerConfiguration;
-import org.modeshape.jcr.perftests.read.ConcurrentReadTestSuite;
+import org.modeshape.jcr.perftests.SuiteRunner;
+import org.modeshape.jcr.perftests.RunnerCfg;
 import org.modeshape.jcr.perftests.report.TextFileReport;
-import org.modeshape.jcr.perftests.write.ConcurrentReadWriteTestSuite;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Runs the performance tests against a Modeshape 2.x repo.
+ * Runs the performance tests against a Modeshape 3.x repo.
  *
  * @author Horia Chiorean
  */
-public class ModeShape2xPerformanceTest {
-
-    private RunnerConfiguration runnerConfig;
-
-    @Before
-    public void before() {
-        //TODO author=Horia Chiorean date=11/22/11 description=some tests excluded because of various problems
-        runnerConfig = new RunnerConfiguration().addTestsToExclude(
-                ConcurrentReadTestSuite.class.getSimpleName(),//deadlock
-                ConcurrentReadWriteTestSuite.class.getSimpleName());//deadlock
-    }
+public class ModeShape30PerformanceTest {
 
     @Test
     public void testModeShapeInMemory() throws Exception {
-        PerformanceTestSuiteRunner performanceTestSuiteRunner = new PerformanceTestSuiteRunner("ModeShape 2.x InMemory", runnerConfig);
+        // see https://issues.jboss.org/browse/MODE-1346
+        SuiteRunner performanceTestSuiteRunner =
+                new SuiteRunner("ModeShape 3.x InMemory", new RunnerCfg().addTestsToExclude("BigFileReadTestSuite", "BigFileWriteTestSuite"));
         Map<String, URL> parameters = new HashMap<String, URL>();
-        parameters.put(JcrRepositoryFactory.URL, getClass().getClassLoader().getResource("configRepository.xml"));
+        parameters.put(JcrRepositoryFactory.URL, getClass().getClassLoader().getResource("configRepository.json"));
         performanceTestSuiteRunner.runPerformanceTests(parameters, null);
 
         new TextFileReport(TimeUnit.SECONDS).generateReport(performanceTestSuiteRunner.getTestData());
     }
-
 }

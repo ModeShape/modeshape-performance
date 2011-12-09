@@ -41,24 +41,24 @@ import java.util.regex.PatternSyntaxException;
  *
  * @author Horia Chiorean
  */
-public final class PerformanceTestSuiteRunner {
+public final class SuiteRunner {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceTestSuiteRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SuiteRunner.class);
 
     private final TestData testData;
-    private final RunnerConfiguration runnerConfig;
+    private final RunnerCfg runnerConfig;
 
     /**
      * Creates a new default test runner instance, which loads its properties from a file called "runner.properties" in the classpath.
      */
-    public PerformanceTestSuiteRunner( String repositoryName ) {
-        this(repositoryName, new RunnerConfiguration());
+    public SuiteRunner( String repositoryName ) {
+        this(repositoryName, new RunnerCfg());
     }
 
     /**
      * Creates a new runner instance passing a custom config.
      */
-    public PerformanceTestSuiteRunner( String repositoryName, RunnerConfiguration runnerConfig ) {
+    public SuiteRunner( String repositoryName, RunnerCfg runnerConfig ) {
         this.testData = new TestData(repositoryName);
         this.runnerConfig = runnerConfig;
     }

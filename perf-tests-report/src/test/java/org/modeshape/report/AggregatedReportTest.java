@@ -28,7 +28,8 @@ public class AggregatedReportTest {
 
     @Test
     public void generateReports() throws Exception {
-        new GoogleBoxChartReport().generate(TimeUnit.MILLISECONDS);
-        new BoxPlotReport().generate(TimeUnit.MILLISECONDS);
+//        new GoogleBoxChartReport().generate(TimeUnit.MILLISECONDS);
+//        new BoxPlotReport().generate(TimeUnit.MILLISECONDS);
+        new D3BoxPlotReport().generate(TimeUnit.MILLISECONDS);
     }
 }

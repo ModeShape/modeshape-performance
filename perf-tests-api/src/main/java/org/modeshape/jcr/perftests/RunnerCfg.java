@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Horia Chiorean
  */
-public final class RunnerConfiguration {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RunnerConfiguration.class);
+public final class RunnerCfg {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RunnerCfg.class);
 
     /** default config file, loaded from classpath */
     private static final String DEFAULT_CONFIG_FILE = "runner.properties";
@@ -52,7 +52,7 @@ public final class RunnerConfiguration {
     int repeatCount = DEFAULT_REPEAT_COUNT;
     int warmupCount = DEFAULT_WARMUP_COUNT;
 
-    RunnerConfiguration( String fileName ) {
+    RunnerCfg( String fileName ) {
         try {
             Properties configParams = new Properties();
             configParams.load(getClass().getClassLoader().getResourceAsStream(fileName));
@@ -63,9 +63,9 @@ public final class RunnerConfiguration {
     }
 
     /**
-     * Creates a new instance by reading the {@link RunnerConfiguration#DEFAULT_CONFIG_FILE}
+     * Creates a new instance by reading the {@link RunnerCfg#DEFAULT_CONFIG_FILE}
      */
-    public RunnerConfiguration() {
+    public RunnerCfg() {
         this(DEFAULT_CONFIG_FILE);
     }
 
@@ -75,7 +75,7 @@ public final class RunnerConfiguration {
      * @param excludeTestsRegExp the regular expressions defining the tests that should be excluded
      * @return this runner configuration (for method chaining purposes)
      */
-    public RunnerConfiguration addTestsToExclude( String... excludeTestsRegExp ) {
+    public RunnerCfg addTestsToExclude( String... excludeTestsRegExp ) {
         this.excludeTestsRegExp.addAll(Arrays.asList(excludeTestsRegExp));
         return this;
     }
@@ -86,7 +86,7 @@ public final class RunnerConfiguration {
      * @param includeTestsRegExp the regular expressions defining the tests that should be included
      * @return this runner configuration (for method chaining purposes)
      */
-    public RunnerConfiguration addTestsToInclude( String... includeTestsRegExp ) {
+    public RunnerCfg addTestsToInclude( String... includeTestsRegExp ) {
         this.includeTestsRegExp.addAll(Arrays.asList(includeTestsRegExp));
         return this;
     }
@@ -98,7 +98,7 @@ public final class RunnerConfiguration {
      * @param repeatCount the number of times to repeat each test
      * @return this runner configuration (for method chaining purposes)
      */
-    public RunnerConfiguration setRepeatCount( int repeatCount ) {
+    public RunnerCfg setRepeatCount( int repeatCount ) {
         this.repeatCount = repeatCount;
         return this;
     }
@@ -110,7 +110,7 @@ public final class RunnerConfiguration {
      * @param warmupCount the number of times each test should be run during warmup
      * @return this runner configuration (for method chaining purposes)
      */
-    public RunnerConfiguration setWarmupCount( int warmupCount ) {
+    public RunnerCfg setWarmupCount( int warmupCount ) {
         this.warmupCount = warmupCount;
         return this;
     }

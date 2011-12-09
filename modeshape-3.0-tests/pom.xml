@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>modeshape-3.x-tests</artifactId>
-    <description>ModeShape 3.x repository performance tests</description>
+    <artifactId>modeshape-3.0-tests</artifactId>
+    <description>ModeShape 3.0 repository performance tests</description>
 
     <properties>
         <modeshape.version>3.0-SNAPSHOT</modeshape.version>
