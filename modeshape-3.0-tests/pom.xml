@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>modeshape-3.0-tests</artifactId>
-    <description>ModeShape 3.0 repository performance tests</description>
+    <description>ModeShape 3.0-SNAPSHOT repository performance tests</description>
 
     <properties>
         <modeshape.version>3.0-SNAPSHOT</modeshape.version>
@@ -26,7 +26,7 @@
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-jcr-redux</artifactId>
+            <artifactId>modeshape-jcr</artifactId>
             <version>${modeshape.version}</version>
         </dependency>
 

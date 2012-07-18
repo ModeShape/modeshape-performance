@@ -13,11 +13,5 @@
             "roles" : ["readonly","readwrite","admin"],
             "useOnFailedLogin" : false
         },
-        "providers" : [
-            {
-                "type" : "JAAS",
-                "policyName" : "modeshape-jcr"
-            }
-        ]
     }
 }

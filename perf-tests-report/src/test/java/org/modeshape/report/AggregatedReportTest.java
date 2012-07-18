@@ -15,21 +15,21 @@
 
 package org.modeshape.report;
 
-import org.junit.Test;
 import java.util.concurrent.TimeUnit;
+import org.junit.Test;
 
 /**
- * Test which invokes the {@link GoogleBoxChartReport} and the {@link BoxPlotReport} class in order to generate
- * some box charts with the comparative test data for each repository.
- *
+ * Test which invokes the {@link GoogleBoxChartReport} and the {@link BoxPlotReport} class in order to generate some box charts
+ * with the comparative test data for each repository.
+ * 
  * @author Horia Chiorean
  */
 public class AggregatedReportTest {
 
     @Test
     public void generateReports() throws Exception {
-//        new GoogleBoxChartReport().generate(TimeUnit.MILLISECONDS);
-//        new BoxPlotReport().generate(TimeUnit.MILLISECONDS);
+        // new GoogleBoxChartReport().generate(TimeUnit.MILLISECONDS);
+        // new BoxPlotReport().generate(TimeUnit.MILLISECONDS);
         new D3BoxPlotReport().generate(TimeUnit.MILLISECONDS);
     }
 }

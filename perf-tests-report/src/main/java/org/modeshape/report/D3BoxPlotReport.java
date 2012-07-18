@@ -21,14 +21,17 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Class which uses a javascript box plot script (http://informationandvisualization.de/blog/box-plot) to generate a report for each test.
- *
+ * Class which uses a javascript box plot script (http://informationandvisualization.de/blog/box-plot) to generate a report for
+ * each test.
+ * 
  * @author Horia Chiorean
  */
 public final class D3BoxPlotReport extends MultipleAggregatedReport {
 
     @Override
-    protected Map<String, ?> getTemplateModel( String testName, Map<String, List<Double>> repositoryValuesMap, TimeUnit timeUnit ) {
+    protected Map<String, ?> getTemplateModel( String testName,
+                                               Map<String, List<Double>> repositoryValuesMap,
+                                               TimeUnit timeUnit ) {
         Map<String, Object> templateModel = new HashMap<String, Object>();
         templateModel.put("title", testName + "(" + timeUnit.toString().toLowerCase() + ")");
         templateModel.put("repositoryValuesMap", repositoryValuesMap);
@@ -43,5 +46,15 @@ public final class D3BoxPlotReport extends MultipleAggregatedReport {
     @Override
     protected String getReportFilename( String testName ) {
         return "d3/" + testName + ".html";
+    }
+
+    @Override
+    protected String getIndexReportFilename() {
+        return "d3/index.html";
+    }
+
+    @Override
+    protected String getIndexReportTemplate() {
+        return "d3/index.ftl";
     }
 }

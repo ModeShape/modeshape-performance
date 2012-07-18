@@ -9,10 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jackrabbit-tests</artifactId>
-    <description>JackRabbit 2.4.2 repository performance tests</description>
+    <artifactId>modeshape-3.0.0.Beta1-tests</artifactId>
+    <description>ModeShape 3.0.0.Beta1 repository performance tests</description>
+
     <properties>
-        <jackrabbit.version>2.4.2</jackrabbit.version>
+        <modeshape.version>3.0.0.Beta1</modeshape.version>
+        <picketbox.version>4.0.7.Final</picketbox.version>
     </properties>
 
     <dependencies>
@@ -22,11 +24,20 @@
             <version>1.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.jackrabbit</groupId>
-            <artifactId>jackrabbit-core</artifactId>
-            <version>${jackrabbit.version}</version>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jcr</artifactId>
+            <version>${modeshape.version}</version>
         </dependency>
+
+        <!--  PicketBox (JAAS implementation) -->
+        <dependency>
+            <groupId>org.picketbox</groupId>
+            <artifactId>picketbox-bare</artifactId>
+            <version>${picketbox.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -38,7 +49,7 @@
     </dependencies>
 
     <build>
-        <plugins>
+       <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -52,4 +63,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

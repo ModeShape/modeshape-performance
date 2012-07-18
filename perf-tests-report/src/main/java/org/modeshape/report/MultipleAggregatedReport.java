@@ -15,18 +15,19 @@
 
 package org.modeshape.report;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Base class for report generators which generate a separate report for each test.
- *
+ * 
  * @author Horia Chiorean
  * @see BoxPlotReport
  */
 public abstract class MultipleAggregatedReport {
-    public void generate(TimeUnit timeUnit) throws Exception {
+    public void generate( TimeUnit timeUnit ) throws Exception {
         Map<String, Map<String, List<Double>>> convertedDataMap = new ReportDataAggregator().loadPerformanceData(timeUnit);
 
         for (String testName : convertedDataMap.keySet()) {
@@ -35,9 +36,27 @@ public abstract class MultipleAggregatedReport {
             Map<String, ?> templateModel = getTemplateModel(testName, convertedDataMap.get(testName), timeUnit);
             new FreemarkerTemplateProcessor(filename, templateName).processTemplate(templateModel);
         }
+
+        String indexFilename = getIndexReportFilename();
+        if (indexFilename != null) {
+            // Generate the index report ...
+            String indexTemplateName = getIndexReportTemplate();
+            Map<String, Object> indexModel = new HashMap<String, Object>();
+            indexModel.put("reportsMap", convertedDataMap);
+            new FreemarkerTemplateProcessor(indexFilename, indexTemplateName).processTemplate(indexModel);
+        }
     }
 
-    protected abstract Map<String, ?> getTemplateModel( String testName, Map<String, List<Double>> repositoryValuesMap, TimeUnit timeUnit );
+    protected abstract Map<String, ?> getTemplateModel( String testName,
+                                                        Map<String, List<Double>> repositoryValuesMap,
+                                                        TimeUnit timeUnit );
+
     protected abstract String getReportTemplate( String testName );
+
     protected abstract String getReportFilename( String testName );
+
+    protected abstract String getIndexReportFilename();
+
+    protected abstract String getIndexReportTemplate();
+
 }

@@ -28,8 +28,9 @@ The framework is a multi-module Maven project, as follows:
     * perf-tests-api - contains the main framework API and in terms of repository dependencies, should only depend on the javax.jcr package
     * perf-tests-report - contains the code which produces aggregated reports, comparing the runs across all the repositories
     * jackrabbit-tests - contains the test code which runs the performance tests against a [JackRabbit](http://jackrabbit.apache.org) repository
-    * modeshape-2.x-tests - contains the test code which runs the performance tests against a [ModeShape 2.x] (http://www.jboss.org/modeshape) repository
-    * modeshape-3.x-tests - contains the test code which runs the performance tests against a [ModeShape 3.x] (http://www.jboss.org/modeshape) repository
+    * modeshape-2.7-tests - contains the test code which runs the performance tests against a [ModeShape 2.7.0.Final] (http://www.jboss.org/modeshape) repository
+    * modeshape-2.8-tests - contains the test code which runs the performance tests against a [ModeShape 2.8.2.Final] (http://www.jboss.org/modeshape) repository
+    * modeshape-3.0-tests - contains the test code which runs the performance tests against a [ModeShape 3.0-SNAPSHOT] (http://www.jboss.org/modeshape) repository
 
 If you want to test the performance of another JCR 2.0 compliant repository, all you need to do is add another sibling module to the
 ones above, which contains the test code and the appropriate dependencies.
