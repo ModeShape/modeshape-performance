@@ -99,7 +99,9 @@
     <modules>
         <module>perf-tests-api</module>
         <module>jackrabbit-tests</module>
-        <module>modeshape-2.7-tests</module>
+        <module>modeshape-2.7.0.Final-tests</module>
+        <module>modeshape-2.8.2.Final-tests</module>
+        <module>modeshape-3.0.0.Beta1-tests</module>
         <module>modeshape-3.0-tests</module>
         <module>perf-tests-report</module>
     </modules>
