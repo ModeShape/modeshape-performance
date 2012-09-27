@@ -47,9 +47,9 @@ public class BigSetCloneTestSuite extends AbstractPerformanceTestSuite {
         
         //create another workspace and session
         Workspace def = srcSession.getWorkspace();
-        def.createWorkspace("test");
+        def.createWorkspace("test-clone");
 
-        dstSession = srcSession.getRepository().login("test");
+        dstSession = srcSession.getRepository().login("test-clone");
         BigSet.cleanWorkspace(dstSession, ROOT_NODE);
         dstSession.save();
     }
@@ -66,7 +66,11 @@ public class BigSetCloneTestSuite extends AbstractPerformanceTestSuite {
         BigSet.cleanWorkspace(srcSession, ROOT_NODE);
         BigSet.cleanWorkspace(dstSession, ROOT_NODE);
         dstSession.logout();
-        srcSession.getWorkspace().deleteWorkspace("test");
+        try {
+            srcSession.getWorkspace().deleteWorkspace("test-clone");
+        } catch (Exception e) {
+            //may be not implemented
+        }
         srcSession.logout();
     }
 
