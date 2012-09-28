@@ -19,6 +19,7 @@
     </properties>
 
     <dependencyManagement>
+        <!-- ModeShape 3.0.0.Beta4 doesn't have a BOM, so we have to redefine all this stuff. Yuck. -->
         <dependencies>
             <dependency>
                 <groupId>org.modeshape</groupId>

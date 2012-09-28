@@ -14,114 +14,21 @@
 
     <properties>
         <modeshape.version>3.0-SNAPSHOT</modeshape.version>
-        <picketbox.version>4.0.9.Final</picketbox.version>
-        <tika.version>1.2</tika.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.modeshape</groupId>
-                <artifactId>modeshape-jcr</artifactId>
-                <version>${modeshape.version}</version>
-            </dependency>
-
-            <!--TIKA text extractor
-                This Tika dependency brings in a lot of 3rd party libraries. We'll exclude
-                most of them and only keep a few that are for Microsoft Office documents,
-                HTML, XML and PDF. When others are needed, they can simply be added to
-                an application's dependencies.
-          
-                Note that 'modeshape-jcr' excludes even more transitive dependencies, since it
-                only uses the MIME type detector functionality, whereas the 'modeshape-extractor-tika'
-                uses everything defined here.
-                -->
-            <dependency>
-                <groupId>org.apache.tika</groupId>
-                <artifactId>tika-parsers</artifactId>
-                <version>${tika.version}</version>
-                <exclusions>
-                    <!--
-                    The NetCDF and HDF files are often used in the scientific community, so we exclude this
-                    library (and the Commons HTTP Client library) by default.
-                    -->
-                    <exclusion>
-                        <groupId>edu.ucar</groupId>
-                        <artifactId>netcdf</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-httpclient</groupId>
-                        <artifactId>commons-httpclient</artifactId>
-                    </exclusion>
-
-                    <!--
-                    Image metadata isn't often for text extraction,
-                    so exclude this library by default.
-                    -->
-                    <exclusion>
-                        <groupId>com.drewnoakes</groupId>
-                        <artifactId>metadata-extractor</artifactId>
-                    </exclusion>
-                    <!--
-                    RSS and Atom feeds aren't often used for text extraction,
-                    so exclude this library by default.
-                    -->
-                    <exclusion>
-                        <groupId>rome</groupId>
-                        <artifactId>rome</artifactId>
-                    </exclusion>
-                    <!--
-                    Boilerpipe HTML templates are likely not used,
-                    so exclude this library by default.
-                    -->
-                    <exclusion>
-                        <groupId>de.l3s.boilerpipe</groupId>
-                        <artifactId>boilerpipe</artifactId>
-                    </exclusion>
-                    <!-- 
-                    PDFBox declares the Bouncy Castle dependencies
-                    as optional, and Tika always depends on them to avoid
-                    problems with encrypted PDFs (see TIKA-370). 
-                    We exclude them by default. 
-                    -->
-                    <exclusion>
-                      <groupId>org.bouncycastle</groupId>
-                      <artifactId>bcmail-jdk15</artifactId>
-                    </exclusion>
-                    <exclusion>
-                      <groupId>org.bouncycastle</groupId>
-                      <artifactId>bcprov-jdk15</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <!--  PicketBox (JAAS implementation), with the same exclusions that ModeShape expects -->
-            <dependency>
-                <groupId>org.picketbox</groupId>
-                <artifactId>picketbox-bare</artifactId>
-                <version>${picketbox.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>apache-xalan</groupId>
-                        <artifactId>xalan</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>apache-xalan</groupId>
-                        <artifactId>serializer</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>apache-xerces</groupId>
-                        <artifactId>xml-apis</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>apache-xerces</groupId>
-                        <artifactId>xercesImpl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+          <!-- Import the ModeShape BOM for embedded usage. This adds to the "dependenciesManagement" section
+               defaults for all of the modules we might need, but we still have to include in the 
+               "dependencies" section the modules we DO need. The benefit is that we don't have to
+               specify the versions of any of those modules.-->
+          <dependency>
+              <groupId>org.modeshape.bom</groupId>
+              <artifactId>modeshape-bom-embedded</artifactId>
+              <version>${modeshape.version}</version>
+              <type>pom</type>
+              <scope>import</scope>
+          </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -132,12 +39,19 @@
             <version>1.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-jcr</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jcr</artifactId>
+        </dependency>
+        <!-- Include a JAAS implementation (called PicketBox), as defined by the ModeShape BOM -->
+        <dependency>
+            <groupId>org.picketbox</groupId>
+            <artifactId>picketbox-bare</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
