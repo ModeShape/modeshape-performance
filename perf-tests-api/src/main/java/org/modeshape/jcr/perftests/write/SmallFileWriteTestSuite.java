@@ -17,7 +17,6 @@
 package org.modeshape.jcr.perftests.write;
 
 import java.util.Calendar;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -57,9 +56,11 @@ public class SmallFileWriteTestSuite extends AbstractPerformanceTestSuite {
 
     @Override
     protected void afterTestRun() throws Exception {
+        session.refresh(true);
         for (int i = 0; i < suiteConfiguration.getNodeCount(); i++) {
             root.getNode("file" + i).remove();
         }
+        session.save();
     }
 
     @Override

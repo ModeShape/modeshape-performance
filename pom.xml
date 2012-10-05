@@ -11,6 +11,7 @@
 
 
     <properties>
+        <java.version>1.6</java.version>
         <junit.version>4.8.2</junit.version>
         <slf4j.api.version>1.6.1</slf4j.api.version>
         <slf4j.log4j.version>1.6.1</slf4j.log4j.version>
@@ -29,6 +30,12 @@
                 <groupId>javax.jcr</groupId>
                 <artifactId>jcr</artifactId>
                 <version>${jcr.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.modeshape</groupId>
+                <artifactId>perf-tests-api</artifactId>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -56,6 +63,7 @@
                 <version>${slf4j.log4j.version}</version>
                 <scope>test</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -74,13 +82,47 @@
         </testResources>
 
         <plugins>
+            <!-- Specify the compiler options and settings -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                <source>${java.version}</source>
+                <target>${java.version}</target>
+                <showDeprecation>false</showDeprecation>
+                <showWarnings>false</showWarnings>
+              </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.10</version>
                 <configuration>
+                    <runOrder>alphabetical</runOrder>
                     <enableAssertions>true</enableAssertions>
                     <argLine>-Xmx1524M -XX:PermSize=256m ${surefire.debug}</argLine>
+                    <systemProperties combine.children="append">
+                      <property>
+                        <name>test.jcr.configuration.name</name>
+                        <value>${configuration.name}</value>
+                      </property>
+                      <property>
+                        <name>java.io.tmpdir</name>
+                        <value>${basedir}/target</value>
+                      </property>
+                      <property>
+                        <name>java.net.preferIPv4Stack</name>
+                        <value>${jgroups.preferIpv4}</value>
+                      </property>
+                      <property>
+                        <name>java.net.preferIPv6Addresses</name>
+                        <value>${jgroups.preferIpv6}</value>
+                      </property>
+                      <property>
+                        <name>java.net.preferIPv6Addresses</name>
+                        <value>${jgroups.preferIpv6}</value>
+                      </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
@@ -102,16 +144,36 @@
         <module>modeshape-2.7.0.Final-tests</module>
         <module>modeshape-2.8.2.Final-tests</module>
         <module>modeshape-3.0.0.Beta4-tests</module>
+        <module>modeshape-3.0.0.CR1-tests</module>
         <module>modeshape-3.0-tests</module>
         <module>perf-tests-report</module>
     </modules>
 
     <profiles>
-        <profile>
-            <id>debug</id>
-            <properties>
-                <surefire.debug>-Xnoagent -Djava.compiler=NONE -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000</surefire.debug>
-            </properties>
-        </profile>
+      <profile>
+        <id>debug</id>
+        <properties>
+          <surefire.debug>-Xnoagent -Djava.compiler=NONE -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000</surefire.debug>
+        </properties>
+      </profile>
+        
+      <!-- Test profile that tests an in-memory repository -->
+      <profile>
+        <id>local-inmemory</id>
+          <activation>
+            <activeByDefault>true</activeByDefault>
+          </activation>
+          <properties>
+            <configuration.name>local-inmemory</configuration.name>
+          </properties>
+      </profile>
+      
+      <!-- Test profile that tests a repository that persists to the local filesystem -->
+      <profile>
+        <id>local-filesystem</id>
+        <properties>
+          <configuration.name>local-filesystem</configuration.name>
+        </properties>
+      </profile>
     </profiles>
 </project>

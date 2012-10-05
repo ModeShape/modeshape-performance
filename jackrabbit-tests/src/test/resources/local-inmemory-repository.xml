@@ -7,7 +7,7 @@
         <!--<AccessManager class="org.apache.jackrabbit.core.security.DefaultAccessManager"/>-->
         <LoginModule class="org.apache.jackrabbit.core.security.simple.SimpleLoginModule"/>
     </Security>
-    <Workspaces rootPath="${project.build.testOutputDirectory}/workspaces" defaultWorkspace="test"/>
+    <Workspaces rootPath="${project.build.directory}/${configuration.name}/workspaces" defaultWorkspace="test"/>
 
     <Workspace name="test">
 
@@ -21,7 +21,7 @@
 
         <SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
             <param name="directoryManagerClass" value="org.apache.jackrabbit.core.query.lucene.directory.RAMDirectoryManager"/>
-            <param name="path" value="${project.build.testOutputDirectory}/index"/>
+            <param name="path" value="${project.build.testOutputDirectory}/${configuration.name}/index"/>
             <FileSystem class="org.apache.jackrabbit.core.fs.mem.MemoryFileSystem"/>
         </SearchIndex>
     </Workspace>

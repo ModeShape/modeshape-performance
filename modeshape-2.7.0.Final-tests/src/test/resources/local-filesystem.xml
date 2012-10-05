@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:mode="http://www.modeshape.org/1.0"
+               xmlns:jcr="http://www.jcp.org/jcr/1.0"
+               xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
+    <!-- Define the sources from which content is made available.  -->
+    <mode:sources jcr:primaryType="nt:unstructured">
+        <mode:source jcr:name="Store" mode:classname="org.modeshape.connector.store.jpa.JpaSource" 
+            mode:autoGenerateSchema="update"
+            mode:model="Simple"
+            mode:dialect="org.hibernate.dialect.HSQLDialect"
+            mode:driverClassName="org.hsqldb.jdbcDriver"
+            mode:username="sa"
+            mode:password=""
+            mode:url="jdbc:hsqldb:${project.build.directory}/${configuration.name}/content/db"
+            mode:maximumConnectionsInPool="2"
+            mode:predefinedWorkspaceNames="default, otherWorkspace, system"
+            mode:showSql="false"
+            mode:creatingWorkspacesAllowed="true"
+            mode:defaultWorkspaceName="default">
+            <defaultWorkspaceName>default</defaultWorkspaceName>
+        </mode:source>
+    </mode:sources>
+    <!-- JCR Repositories.  This is required, with a separate repository for each JCR repository instance. -->
+    <mode:repositories>
+        <mode:repository jcr:name="My repository" mode:source="Store">
+            <!-- Define the options for the JCR repository, using camelcase version of JcrRepository.Option names-->
+            <mode:options jcr:primaryType="options" >
+                <mode:option jcr:name="jaasLoginConfigName" mode:value="modeshape-jcr"/>
+                <!-- Explicitly specify the "system" workspace in the "SystemStore" source. -->
+                <mode:option jcr:name="systemSourceName" mode:value="system@Store"/>
+                <!-- Explicitly specify the directory where the index files should be stored. -->
+                <mode:option jcr:name="queryIndexDirectory" mode:value="${project.build.directory}/${configuration.name}/indexes"/>
+                <!--  Should  indexes should be rebuilt synchronously when the repository restarts, default true  -->                           
+                <mode:option jcr:name="queryIndexesRebuiltSynchronously" mode:value="true"/>
+                <!--  specifies the strategy (always or ifMissing) used to determine which query indexes need to be rebuilt when the repository restarts -->
+                <mode:option jcr:name="rebuildQueryIndexOnStartup" mode:value="ifMissing"/>
+            </mode:options>
+        </mode:repository>
+    </mode:repositories>
+</configuration>
