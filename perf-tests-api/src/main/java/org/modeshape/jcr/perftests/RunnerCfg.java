@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Callable;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,15 +51,19 @@ public final class RunnerCfg {
 
     final List<String> excludeTestsRegExp = new ArrayList<String>();
     final List<String> includeTestsRegExp = new ArrayList<String>();
+    private Callable<?> beforeRunningSuiteRunnable;
+    private AfterOperation afterRunningSuiteRunnable;
+    final Properties configurationProperties;
 
     int repeatCount = DEFAULT_REPEAT_COUNT;
     int warmupCount = DEFAULT_WARMUP_COUNT;
 
     RunnerCfg( String fileName ) {
+        configurationProperties = new Properties();
         try {
-            Properties configParams = new Properties();
-            configParams.load(getClass().getClassLoader().getResourceAsStream(fileName));
-            initRunner(configParams);
+            configurationProperties.load(getClass().getClassLoader().getResourceAsStream(DEFAULT_CONFIG_FILE));
+            configurationProperties.load(getClass().getClassLoader().getResourceAsStream(fileName));
+            initRunner(configurationProperties);
         } catch (IOException e) {
             LOGGER.warn("Cannot load config file. Will use defaults ", e);
         }
@@ -67,6 +74,42 @@ public final class RunnerCfg {
      */
     public RunnerCfg() {
         this(DEFAULT_CONFIG_FILE);
+    }
+
+    /**
+     * Get a configuration property.
+     * 
+     * @param name the property name
+     * @return the property value, or null if there was no such property
+     */
+    public String getProperty( String name ) {
+        return configurationProperties.getProperty(name);
+    }
+
+    /**
+     * Get a configuration property.
+     * 
+     * @param name the property name
+     * @param defaultValue the default value for the property
+     * @return the property value, or the default value if there was no such property
+     */
+    public String getProperty( String name,
+                               String defaultValue ) {
+        return configurationProperties.getProperty(name, defaultValue);
+    }
+
+    /**
+     * Get configuration property as a list of values.
+     * 
+     * @param name the property name
+     * @return a list containing the comma-separated values; never null but possibly empty if there was no property with the given
+     *         name
+     */
+    public List<String> getPropertyAsList( String name ) {
+        List<String> result = new ArrayList<String>();
+        String value = configurationProperties.getProperty(name);
+        parseMultiValuedString(value, result);
+        return result;
     }
 
     /**
@@ -118,12 +161,12 @@ public final class RunnerCfg {
     private void initRunner( Properties configParams ) {
         parseMultiValuedString(configParams.getProperty("tests.exclude"), excludeTestsRegExp);
         parseMultiValuedString(configParams.getProperty("tests.include"), includeTestsRegExp);
-        repeatCount = Integer.valueOf(configParams.getProperty("repeat.count"));
-        warmupCount = Integer.valueOf(configParams.getProperty("warmup.count"));
+        repeatCount = Integer.valueOf(configParams.getProperty("repeat.count", Integer.toString(DEFAULT_REPEAT_COUNT)));
+        warmupCount = Integer.valueOf(configParams.getProperty("warmup.count", Integer.toString(DEFAULT_WARMUP_COUNT)));
     }
 
-    private void parseMultiValuedString( String multiValueString,
-                                         List<String> collector ) {
+    protected void parseMultiValuedString( String multiValueString,
+                                           List<String> collector ) {
         if (multiValueString == null) {
             return;
         }
@@ -133,5 +176,31 @@ public final class RunnerCfg {
                 collector.add(value.trim());
             }
         }
+    }
+
+    public void runBeforeRunningSuite( Callable<?> runnable ) {
+        beforeRunningSuiteRunnable = runnable;
+    }
+
+    public void runAfterRunningSuite( AfterOperation operation ) {
+        afterRunningSuiteRunnable = operation;
+    }
+
+    public void beforeRunningSuite() throws Exception {
+        if (beforeRunningSuiteRunnable != null) {
+            beforeRunningSuiteRunnable.call();
+        }
+    }
+
+    public void afterRunningSuite( RepositoryFactory repositoryFactory,
+                                   Repository repository ) throws Exception {
+        if (afterRunningSuiteRunnable != null) {
+            afterRunningSuiteRunnable.call(repositoryFactory, repository);
+        }
+    }
+
+    public static interface AfterOperation {
+        void call( RepositoryFactory repositoryFactory,
+                   Repository repository ) throws Exception;
     }
 }

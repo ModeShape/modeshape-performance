@@ -14,20 +14,29 @@
 
     <properties>
         <modeshape.version>2.7.0.Final</modeshape.version>
+        <hsqldb.version>1.8.0.2</hsqldb.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>perf-tests-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-jcr</artifactId>
             <version>${modeshape.version}</version>
         </dependency>
+        <dependency>
+				    <groupId>org.modeshape</groupId>
+				    <artifactId>modeshape-connector-store-jpa</artifactId>
+            <version>${modeshape.version}</version>
+			  </dependency>
+        <dependency>
+					  <groupId>hsqldb</groupId>
+					  <artifactId>hsqldb</artifactId>
+					  <version>${hsqldb.version}</version>
+				</dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

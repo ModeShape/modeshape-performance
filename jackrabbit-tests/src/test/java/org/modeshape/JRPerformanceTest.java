@@ -16,30 +16,58 @@
  */
 package org.modeshape;
 
-import java.net.URL;
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import javax.jcr.SimpleCredentials;
 import org.apache.jackrabbit.commons.JcrUtils;
-import org.junit.Test;
-import org.modeshape.jcr.perftests.SuiteRunner;
-import org.modeshape.jcr.perftests.report.TextFileReport;
+import org.modeshape.jcr.perftests.AbstractImplementationTest;
+import org.modeshape.jcr.perftests.TestUtil;
 
 /**
  * Test which runs the performance suite against a Jackrabbit in memory repository.
- * 
- * @author Horia Chiorean
  */
-public class JRPerformanceTest {
+public class JRPerformanceTest extends AbstractImplementationTest {
 
-    @Test
-    public void testJackrabbitInMemoryRepo() throws Exception {
-        SuiteRunner performanceTestSuiteRunner = new SuiteRunner("JackRabbit 2.4.2 InMemory");
-        Map<String, URL> parameters = new HashMap<String, URL>();
-        parameters.put(JcrUtils.REPOSITORY_URI, getClass().getClassLoader().getResource("./"));
-        performanceTestSuiteRunner.runPerformanceTests(parameters, new SimpleCredentials("test", "test".toCharArray()));
+    /**
+     * Before each test, we need to copy the correct configuration file into the test directory where all of the repository data
+     * will be stored. Jackrabbit expects the "repository.xml" file to be in this directory.
+     */
+    @Override
+    protected void initializeBeforeRunningTest() throws Exception {
+        super.initializeBeforeRunningTest();
 
-        new TextFileReport(TimeUnit.SECONDS).generateReport(performanceTestSuiteRunner.getTestData());
+        // Write the repository.xml file into the (one) test directory ...
+        final File testDir = getTestDirectory();
+        final String testConfig = runnerConfig.getProperty("configuration.file");
+
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(testConfig);
+        OutputStream configStream = new FileOutputStream(new File(testDir, "repository.xml"));
+        TestUtil.write(stream, configStream);
     }
+
+    /**
+     * Jackrabbit requires a single URI parameter that points to the directory where the repository is persisted, and in which
+     * should appear the "repository.xml" configuration file.
+     */
+    @Override
+    protected void initializeRepositoryFactoryProperties( Map<String, Object> parameters ) throws Exception {
+        final File testDir = getTestDirectory();
+        parameters.put(JcrUtils.REPOSITORY_URI, testDir.toURI().toURL());
+    }
+
+    /**
+     * Utility method to get the first test directory, which is where we'll put all the repository data.
+     * 
+     * @return the directory object; never null
+     */
+    protected File getTestDirectory() {
+        File testDir = testDirectories.get(0);
+        assert testDir != null;
+        // Note the directory may not exist yet, since it is created every time the tests are run while this method
+        // might be called *before* any of the tests are actually run
+        return testDir;
+    }
+
 }

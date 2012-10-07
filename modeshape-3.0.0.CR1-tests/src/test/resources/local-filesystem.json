@@ -1,0 +1,34 @@
+{
+    "name" : "Test Repository",
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "storage" : {
+        "transactionManagerLookup" : "org.infinispan.transaction.lookup.DummyTransactionManagerLookup",
+        "cacheConfiguration" : "${configuration.name}-infinispan-config.xml",
+        "cacheName" : "persisted-repository",
+        "binaryStorage" : {
+            "type" : "file",
+            "directory": "${project.build.directory}/${configuration.name}/binaries",
+            "minimumBinarySizeInBytes" : 999
+        }
+    },
+    "query" : {
+        "enabled" : true,
+        "enableFullTextSearch" : true,
+        "indexStorage" : {
+            "type" : "filesystem",
+            "location" : "${project.build.directory}/${configuration.name}/indexes",
+            "lockingStrategy" : "native",
+            "fileSystemAccessType" : "auto"
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+    }
+}

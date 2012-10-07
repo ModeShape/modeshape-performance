@@ -16,29 +16,20 @@
  */
 package org.modeshape;
 
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import org.junit.Test;
 import org.modeshape.jcr.api.RepositoryFactory;
-import org.modeshape.jcr.perftests.SuiteRunner;
-import org.modeshape.jcr.perftests.report.TextFileReport;
+import org.modeshape.jcr.perftests.AbstractImplementationTest;
 
 /**
- * Runs the performance tests against a Modeshape 3.x repo.
+ * Runs the performance tests against a Modeshape 2.x repo.
  * 
  * @author Horia Chiorean
  */
-public class ModeShape30Beta1PerformanceTest {
+public class ModeShapePerformanceTest extends AbstractImplementationTest {
 
-    @Test
-    public void testModeShapeInMemory() throws Exception {
-        SuiteRunner performanceTestSuiteRunner = new SuiteRunner("ModeShape 3.0.0.Beta1 InMemory");
-        Map<String, URL> parameters = new HashMap<String, URL>();
-        parameters.put(RepositoryFactory.URL, getClass().getClassLoader().getResource("configRepository.json"));
-        performanceTestSuiteRunner.runPerformanceTests(parameters, null); // new SimpleCredentials("test", "test".toCharArray()));
-
-        new TextFileReport(TimeUnit.SECONDS).generateReport(performanceTestSuiteRunner.getTestData());
+    @Override
+    protected void initializeRepositoryFactoryProperties( Map<String, Object> parameters ) {
+        final String testConfig = runnerConfig.getProperty("configuration.file");
+        parameters.put(RepositoryFactory.URL, getClass().getClassLoader().getResource(testConfig));
     }
 }

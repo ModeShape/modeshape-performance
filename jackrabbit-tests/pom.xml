@@ -10,17 +10,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jackrabbit-tests</artifactId>
-    <description>JackRabbit 2.4.2 repository performance tests</description>
+    <description>JackRabbit 2.5.2 repository performance tests</description>
     <properties>
-        <jackrabbit.version>2.4.2</jackrabbit.version>
+        <jackrabbit.version>2.5.2</jackrabbit.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>perf-tests-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>

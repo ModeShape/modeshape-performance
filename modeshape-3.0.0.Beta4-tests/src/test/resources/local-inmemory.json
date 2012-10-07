@@ -8,6 +8,13 @@
     "storage" : {
         "transactionManagerLookup" : "org.infinispan.transaction.lookup.DummyTransactionManagerLookup"
     },
+    "query" : {
+        "enabled" : true,
+        "enableFullTextSearch" : true,
+        "indexStorage" : {
+            "type" : "ram"
+        }
+    },
     "security" : {
         "anonymous" : {
             "roles" : ["readonly","readwrite","admin"],
