@@ -86,16 +86,14 @@ public class TestUtil {
         assert input != null;
         boolean error = false;
         try {
-            if (input != null) {
-                byte[] buffer = new byte[bufferSize];
-                try {
-                    int numRead = 0;
-                    while ((numRead = input.read(buffer)) > -1) {
-                        stream.write(buffer, 0, numRead);
-                    }
-                } finally {
-                    input.close();
+            byte[] buffer = new byte[bufferSize];
+            try {
+                int numRead = 0;
+                while ((numRead = input.read(buffer)) > -1) {
+                    stream.write(buffer, 0, numRead);
                 }
+            } finally {
+                input.close();
             }
         } catch (IOException e) {
             error = true; // this error should be thrown, even if there is an error flushing/closing stream
