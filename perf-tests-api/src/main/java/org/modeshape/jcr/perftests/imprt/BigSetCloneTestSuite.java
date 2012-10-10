@@ -16,15 +16,15 @@
  */
 package org.modeshape.jcr.perftests.imprt;
 
-import javax.jcr.*;
+import javax.jcr.Session;
+import javax.jcr.Workspace;
 import org.modeshape.jcr.perftests.AbstractPerformanceTestSuite;
 import org.modeshape.jcr.perftests.BigSet;
 import org.modeshape.jcr.perftests.SuiteConfiguration;
 
 /**
- * <code>ManyNodesImportTestSuite</code>
- * implements a performance test, which imports
- * repository with many nodes from external file.
+ * <code>ManyNodesImportTestSuite</code> implements a performance test, which imports repository with many nodes from external
+ * file.
  */
 public class BigSetCloneTestSuite extends AbstractPerformanceTestSuite {
 
@@ -32,20 +32,19 @@ public class BigSetCloneTestSuite extends AbstractPerformanceTestSuite {
     private static String ROOT_NODE = "ROOT_NODE";
 
     private Session srcSession, dstSession;
-    private int i =0;
-    
+
     public BigSetCloneTestSuite( SuiteConfiguration suiteConfiguration ) {
         super(suiteConfiguration);
     }
 
     @Override
     public void beforeSuite() throws Exception {
-        //create first session and pre-fill the repo
+        // create first session and pre-fill the repo
         srcSession = newSession();
         BigSet.fillRepository(srcSession, ROOT_NODE, NODE_COUNT, 4);
         srcSession.save();
-        
-        //create another workspace and session
+
+        // create another workspace and session
         Workspace def = srcSession.getWorkspace();
         def.createWorkspace("test-clone");
 
@@ -53,7 +52,6 @@ public class BigSetCloneTestSuite extends AbstractPerformanceTestSuite {
         BigSet.cleanWorkspace(dstSession, ROOT_NODE);
         dstSession.save();
     }
-
 
     @Override
     public void runTest() throws Exception {
@@ -69,7 +67,7 @@ public class BigSetCloneTestSuite extends AbstractPerformanceTestSuite {
         try {
             srcSession.getWorkspace().deleteWorkspace("test-clone");
         } catch (Exception e) {
-            //may be not implemented
+            // may be not implemented
         }
         srcSession.logout();
     }

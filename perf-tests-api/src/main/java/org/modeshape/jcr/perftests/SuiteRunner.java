@@ -16,7 +16,6 @@
  */
 package org.modeshape.jcr.perftests;
 
-import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +83,6 @@ public final class SuiteRunner {
      */
     public void runPerformanceTests( Map<?, ?> repositoryConfigParams,
                                      Credentials credentials ) throws Exception {
-
         // Load the test suite, and run each suite by itself with a clean repository ...
         Set<Class<? extends AbstractPerformanceTestSuite>> testSuites = loadPerformanceTestSuites();
         for (Class<? extends AbstractPerformanceTestSuite> testSuiteClass : testSuites) {
@@ -111,7 +109,6 @@ public final class SuiteRunner {
             } finally {
                 // Always after the suite is run ...
                 runnerConfig.afterRunningSuite(repositoryFactory, repository);
-
             }
         }
 
@@ -161,21 +158,6 @@ public final class SuiteRunner {
         testSuiteRun.setWarmup(false).setRepeatCount(runnerConfig.repeatCount).run();
         testSuite.tearDown();
 
-    }
-
-    private static boolean delete( File fileOrDirectory ) {
-        if (fileOrDirectory == null) return false;
-        if (!fileOrDirectory.exists()) return false;
-
-        // The file/directory exists, so if a directory delete all of the contents ...
-        if (fileOrDirectory.isDirectory()) {
-            for (File childFile : fileOrDirectory.listFiles()) {
-                delete(childFile); // recursive call (good enough for now until we need something better)
-            }
-            // Now an empty directory ...
-        }
-        // Whether this is a file or empty directory, just delete it ...
-        return fileOrDirectory.delete();
     }
 
     private boolean isSuiteExcluded( Class<? extends AbstractPerformanceTestSuite> testSuiteClass ) {
