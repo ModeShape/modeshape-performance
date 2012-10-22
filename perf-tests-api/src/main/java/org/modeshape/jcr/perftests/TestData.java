@@ -19,6 +19,7 @@ package org.modeshape.jcr.perftests;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class which holds the performance statistics for the test ran against repositories by <code>PerformanceTestSuiteRunner</code>
@@ -29,7 +30,7 @@ public final class TestData {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestData.class);
 
-    /** Map [test name, [test duration 1(ms), test duration 2(ms)]] */
+    /** Map [test name, [test duration 1(ns), test duration 2(ns)]] */
     private final Map<String, List<Long>> durationsMap = new TreeMap<String, List<Long>>();
 
     /** List of the names of the operations that have failed */
@@ -41,8 +42,8 @@ public final class TestData {
         this.repositoryName = repositoryName;
     }
 
-    void recordSuccess( String operationName, long durationNanos ) {
-        LOGGER.info("{} : {} (ns)", new Object[] {operationName, durationNanos});
+    void recordSuccess( String operationName, long durationNanos, int runCount ) {
+        LOGGER.info("{} #{}: {} (s)", new Object[] {operationName, runCount, (double) durationNanos / TimeUnit.SECONDS.toNanos(1)});
 
         List<Long> testData = durationsMap.get(operationName);
         if (testData != null) {

@@ -11,6 +11,9 @@
 
     <artifactId>perf-tests-report</artifactId>
 
+    <properties>
+        <sigar.version>1.6.3.82</sigar.version>
+    </properties>
     <dependencies>
 
         <dependency>
@@ -21,6 +24,19 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hyperic</groupId>
+            <artifactId>sigar</artifactId>
+            <version>${sigar.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hyperic</groupId>
+            <artifactId>sigar-dist</artifactId>
+            <version>${sigar.version}</version>
+            <type>zip</type>
         </dependency>
 
         <dependency>
@@ -85,5 +101,72 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
+
+
     </dependencies>
+
+    <build>
+        <plugins>
+            <!--To be able to use Sigar to get machine info, we need some extra processing steps -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                        <artifactItems>
+                        <!-- Unpack the native files from the sigar-dist -->
+                        <artifactItem>
+                            <groupId>org.hyperic</groupId>
+                            <artifactId>sigar-dist</artifactId>
+                            <version>${sigar.version}</version>
+                            <type>zip</type>
+                            <overWrite>false</overWrite>
+                            <outputDirectory>${project.build.directory}/sigar</outputDirectory>
+                            <includes>**/*.dll,**/*.so,**/*.sl,**/*.dylib,**/*.lib</includes>
+                        </artifactItem>
+                        </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy todir="${project.build.outputDirectory}" flatten="true">
+                                    <fileset dir="${project.build.directory}/sigar"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemProperties>
+                        <property>
+                            <name>org.hyperic.sigar.path</name>
+                            <value>${project.build.outputDirectory}</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

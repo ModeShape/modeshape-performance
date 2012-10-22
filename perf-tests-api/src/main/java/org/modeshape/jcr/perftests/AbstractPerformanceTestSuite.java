@@ -24,6 +24,8 @@ import java.util.concurrent.Executors;
 import javax.jcr.Credentials;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base class for individual performance benchmarks.To create a new performance test suite, you should subclass this.
@@ -31,6 +33,8 @@ import javax.jcr.Session;
  * @author Horia Chiorean
  */
 public abstract class AbstractPerformanceTestSuite {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPerformanceTestSuite.class);
 
     protected SuiteConfiguration suiteConfiguration;
 
@@ -83,8 +87,12 @@ public abstract class AbstractPerformanceTestSuite {
         running = false;
         execService.shutdown();
 
-        afterSuite();
-        closeSessions();
+        try {
+            afterSuite();
+            closeSessions();
+        } catch (Exception e) {
+            LOGGER.warn("Error during tear down:", e);
+        }
 
         this.execService = null;
         this.sessions = null;

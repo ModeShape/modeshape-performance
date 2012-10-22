@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-    <link rel="stylesheet" type="text/css" href="boxplot.css">
-    <script src="boxplot.js"></script>
+    <link rel="stylesheet" type="text/css" href="${resourcesDir}/boxplot.css">
+    <script src="${resourcesDir}/boxplot.js"></script>
 
     <style type="text/css">
         #header {
@@ -43,7 +43,13 @@
 <div id="header">
     <h2>${title}</h2>
 </div>
-
+<div id="machineInformation">
+    <p>
+    <#list machineInfo as info>
+    ${info}<br/>
+    </#list>
+    </p>
+</div>
 <#list repositoryValuesMap?keys as repositoryName>
 <div id="${"plot" + repositoryName_index}" class="boxplot-container">
     <div id="contentoverall"

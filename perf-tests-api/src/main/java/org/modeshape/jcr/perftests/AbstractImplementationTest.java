@@ -82,8 +82,11 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractImplementationTest {
 
-    // protected static final String DEFAULT_CONFIGURATION_NAME = "local-inmemory";
-    protected static final String DEFAULT_CONFIGURATION_NAME = "local-filesystem";
+    /**
+     * the default configuration must match whatever the maven profile which is "activeByDefault"
+     */
+    protected static final String DEFAULT_CONFIGURATION_NAME = "local-inmemory";
+//    protected static final String DEFAULT_CONFIGURATION_NAME = "local-filesystem";
 
     protected static final String CONFIGURATION_NAME_SYSTEM_PROPERTY_NAME = "test.jcr.configuration.name";
     protected static final String TEST_DESCRIPTION = "tests.description";

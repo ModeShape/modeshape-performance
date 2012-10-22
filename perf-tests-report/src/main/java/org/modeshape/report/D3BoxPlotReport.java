@@ -29,12 +29,13 @@ import java.util.concurrent.TimeUnit;
 public final class D3BoxPlotReport extends MultipleAggregatedReport {
 
     @Override
-    protected Map<String, ?> getTemplateModel( String testName,
+    protected Map<String, Object> getTemplateModel( String testName,
                                                Map<String, List<Double>> repositoryValuesMap,
                                                TimeUnit timeUnit ) {
         Map<String, Object> templateModel = new HashMap<String, Object>();
         templateModel.put("title", testName + "(" + timeUnit.toString().toLowerCase() + ")");
         templateModel.put("repositoryValuesMap", repositoryValuesMap);
+        templateModel.put("resourcesDir", getWorkingDir() + "/d3");
         return templateModel;
     }
 

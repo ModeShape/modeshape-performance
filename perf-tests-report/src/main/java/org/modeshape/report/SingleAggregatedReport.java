@@ -15,6 +15,7 @@
 
 package org.modeshape.report;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +30,9 @@ public abstract class SingleAggregatedReport {
 
     public void generate(TimeUnit timeUnit) throws Exception {
         Map<String, ?> templateModel = getTemplateModel(new ReportDataAggregator().loadPerformanceData(timeUnit), timeUnit);
-        new FreemarkerTemplateProcessor(getReportFilename(), getTemplateFilename()).processTemplate(templateModel);
+        File reportsFolder = ReportsHelper.getRootReportDir();
+        File reportFile = ReportsHelper.getReportFile(reportsFolder, getReportFilename());
+        new FreemarkerTemplateProcessor(reportFile, getTemplateFilename()).processTemplate(templateModel);
     }
 
     abstract String getReportFilename();

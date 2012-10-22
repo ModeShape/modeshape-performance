@@ -15,39 +15,77 @@
 
 package org.modeshape.report;
 
+import org.modeshape.common.util.StringUtil;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Base class for report generators which generate a separate report for each test.
+ * Base class for report generators which generates a separate report for each test.
  * 
  * @author Horia Chiorean
  * @see BoxPlotReport
  */
 public abstract class MultipleAggregatedReport {
+
+    private static final MachineInfo MACHINE_INFO = new MachineInfo();
+
     public void generate( TimeUnit timeUnit ) throws Exception {
         Map<String, Map<String, List<Double>>> convertedDataMap = new ReportDataAggregator().loadPerformanceData(timeUnit);
+        File reportRootDir = ReportsHelper.getRootReportDir();
 
         for (String testName : convertedDataMap.keySet()) {
             String filename = getReportFilename(testName);
+            File reportFile = ReportsHelper.getReportFile(reportRootDir, filename);
+
             String templateName = getReportTemplate(testName);
-            Map<String, ?> templateModel = getTemplateModel(testName, convertedDataMap.get(testName), timeUnit);
-            new FreemarkerTemplateProcessor(filename, templateName).processTemplate(templateModel);
+            Map<String, Object> templateModel = getTemplateModel(testName, convertedDataMap.get(testName), timeUnit);
+            addMachineInformation(templateModel);
+            new FreemarkerTemplateProcessor(reportFile, templateName).processTemplate(templateModel);
         }
 
         String indexFilename = getIndexReportFilename();
         if (indexFilename != null) {
             // Generate the index report ...
+            File reportIndexFile = ReportsHelper.getReportFile(reportRootDir, indexFilename);
+
             String indexTemplateName = getIndexReportTemplate();
             Map<String, Object> indexModel = new HashMap<String, Object>();
             indexModel.put("reportsMap", convertedDataMap);
-            new FreemarkerTemplateProcessor(indexFilename, indexTemplateName).processTemplate(indexModel);
+            new FreemarkerTemplateProcessor(reportIndexFile, indexTemplateName).processTemplate(indexModel);
         }
     }
 
-    protected abstract Map<String, ?> getTemplateModel( String testName,
+    protected String getWorkingDir() {
+        String resourcesDir = getClass().getClassLoader().getResource(".").toString();
+        if (resourcesDir.endsWith("/")) {
+            resourcesDir = resourcesDir.substring(0, resourcesDir.lastIndexOf("/"));
+        }
+        return resourcesDir;
+    }
+
+    protected void addMachineInformation(Map<String, Object> templateModel) {
+        List<String> machineInfo = new ArrayList<String>();
+        machineInfo.add(MACHINE_INFO.jvmInformation());
+        machineInfo.add(MACHINE_INFO.osInformation());
+
+        String cpuInformation = MACHINE_INFO.cpuInformation();
+        if (!StringUtil.isBlank(cpuInformation)) {
+            machineInfo.add(cpuInformation);
+        }
+
+        String memoryInformation = MACHINE_INFO.memoryInformation();
+        if (!StringUtil.isBlank(memoryInformation)) {
+            machineInfo.add(memoryInformation);
+        }
+
+        templateModel.put("machineInfo", machineInfo);
+    }
+
+    protected abstract Map<String, Object> getTemplateModel( String testName,
                                                         Map<String, List<Double>> repositoryValuesMap,
                                                         TimeUnit timeUnit );
 
