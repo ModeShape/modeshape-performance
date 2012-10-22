@@ -3,14 +3,21 @@
 <head>
     <title>Performance Report</title>
 
-    <script type="text/javascript" src="d3.js"></script>
-    <script type="text/javascript" src="d3.chart.js"></script>
+    <script type="text/javascript" src="${resourcesDir}/d3.js"></script>
+    <script type="text/javascript" src="${resourcesDir}/d3.chart.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="box.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourcesDir}/box.css"/>
 </head>
 <body>
 <div id="header">
     <h2>${title}</h2>
+</div>
+<div id="machineInformation">
+    <p>
+    <#list machineInfo as info>
+        ${info}<br/>
+    </#list>
+    </p>
 </div>
 <div id="chart"></div>
 <div id="labels">
@@ -18,7 +25,7 @@
     <div class="label">${repositoryName}</div>
 </#list>
 </div>
-<script type="text/javascript" src="box.js"></script>
+<script type="text/javascript" src="${resourcesDir}/box.js"></script>
 <script type="text/javascript">
     window.onload = function () {
         var w = 120, h = 500, m = [10, 50, 20, 50]; // top right bottom left

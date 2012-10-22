@@ -22,9 +22,7 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.Map;
 
 /**
@@ -36,8 +34,8 @@ final class FreemarkerTemplateProcessor {
 
     private static final Configuration FREEMARKER_CONFIG;
 
-    private final String reportName;
     private final String templateName;
+    private final File reportFile;
 
     static {
         FREEMARKER_CONFIG = new Configuration();
@@ -52,33 +50,13 @@ final class FreemarkerTemplateProcessor {
         FREEMARKER_CONFIG.setWhitespaceStripping(true);
     }
 
-    FreemarkerTemplateProcessor( String reportName, String templateName ) {
-        this.reportName = reportName;
+    FreemarkerTemplateProcessor( File reportFile, String templateName ) {
         this.templateName = templateName;
+        this.reportFile = reportFile;
     }
 
     void processTemplate( Map<String, ?> templateModel ) throws IOException, TemplateException {
         Template reportTemplate = FREEMARKER_CONFIG.getTemplate(templateName);
-        reportTemplate.process(templateModel, new PrintWriter(getReportFile()));
-    }
-
-    private File getReportFile() {
-        return new File(getRootReportDir(), reportName);
-    }
-
-    private File getRootReportDir() {
-        try {
-            File reportDir = new File(getClass().getClassLoader().getResource(".").toURI());
-            if (!reportDir.exists() || !reportDir.isDirectory()) {
-                throw new IllegalStateException("Cannot locate target folder for performance report");
-            }
-            return reportDir;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void main( String[] args ) {
-        System.out.println(new DecimalFormat("0.######").format(1124.333));
+        reportTemplate.process(templateModel, new PrintWriter(reportFile));
     }
 }
