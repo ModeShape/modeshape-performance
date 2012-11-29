@@ -82,6 +82,13 @@
 
         <dependency>
             <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-3.0.1.Final-tests</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
             <artifactId>jackrabbit-tests</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
