@@ -11,13 +11,12 @@
         "allowCreation" : true
     },
     "storage" : {
-        "transactionManagerLookup" : "org.infinispan.transaction.lookup.DummyTransactionManagerLookup",
         "cacheConfiguration" : "${configuration.name}-infinispan-config.xml",
         "cacheName" : "persisted-repository",
         "binaryStorage" : {
             "type" : "file",
             "directory": "${project.build.directory}/${configuration.name}/binaries",
-            "minimumBinarySizeInBytes" : 999
+            "minimumBinarySizeInBytes" : 4096
         }
     },
     "query" : {

@@ -1,5 +1,10 @@
 {
     "name" : "Test Repository",
+    "jndiName" : "",
+    "transactionMode" : "none",
+    "monitoring" : {
+        "enabled" : false
+    },
     "workspaces" : {
         "predefined" : ["otherWorkspace"],
         "default" : "default",

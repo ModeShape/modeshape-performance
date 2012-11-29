@@ -145,6 +145,7 @@
         <module>modeshape-2.8.2.Final-tests</module>
         <module>modeshape-3.0.0.Beta4-tests</module>
         <module>modeshape-3.0.0.CR1-tests</module>
+        <module>modeshape-3.0.1.Final-tests</module>
         <module>modeshape-3.0-tests</module>
         <module>perf-tests-report</module>
     </modules>
