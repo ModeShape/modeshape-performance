@@ -53,7 +53,7 @@ public final class ReportsHelper {
 
     static File getRootReportDir() {
         try {
-            URI currentFolderURI = ReportsHelper.class.getClassLoader().getResource(".").toURI();
+            URI currentFolderURI = new File("target").getAbsoluteFile().toURI(); // ReportsHelper.class.getClassLoader().getResource(".").toURI();
             String currentFolderURIString = currentFolderURI.toString();
             int lastTargetDirIdx = currentFolderURIString.lastIndexOf("/target");
             //built only for maven

@@ -1,0 +1,26 @@
+{
+    "name" : "Test Repository",
+    "jndiName" : "",
+    "transactionMode" : "none",
+    "monitoring" : {
+        "enabled" : false
+    },
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "query" : {
+        "enabled" : true,
+        "enableFullTextSearch" : true,
+        "indexStorage" : {
+            "type" : "ram"
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+    }
+}

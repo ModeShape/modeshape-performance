@@ -139,14 +139,19 @@
     </build>
 
     <modules>
+        <!-- These need to be enable here and added as dependencies in 'perf-tests-report' -->
         <module>perf-tests-api</module>
-        <module>jackrabbit-tests</module>
+        <module>jackrabbit-2.5.2-tests</module>
+        <module>jackrabbit-2.7.0-tests</module>
         <module>modeshape-2.7.0.Final-tests</module>
         <module>modeshape-2.8.2.Final-tests</module>
-        <module>modeshape-3.0.0.Beta4-tests</module>
-        <module>modeshape-3.0.0.CR1-tests</module>
-        <module>modeshape-3.0.1.Final-tests</module>
-        <module>modeshape-3.0-tests</module>
+        <module>modeshape-3.0.x.Final-tests</module>
+        <module>modeshape-3.1.x-tests</module>
+        <module>modeshape-3.2.x-tests</module>
+        <module>modeshape-3.3.x-tests</module>
+        <module>modeshape-3.4.x-tests</module>
+        <module>modeshape-3.5.x-tests</module>
+        <module>modeshape-latest-tests</module>
         <module>perf-tests-report</module>
     </modules>
 
