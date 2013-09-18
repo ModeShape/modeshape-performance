@@ -20,3 +20,6 @@ atlassian-ide-plugin.xml
 
 # log files
 *.log
+
+# report output
+reports

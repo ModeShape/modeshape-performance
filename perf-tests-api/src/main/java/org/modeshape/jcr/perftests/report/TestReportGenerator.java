@@ -37,14 +37,15 @@ public abstract class TestReportGenerator {
     public abstract void generateReport( TestData testData ) throws Exception;
 
     protected File getRootReportDir() {
-        try {
-            File reportDir = new File(getClass().getClassLoader().getResource(".").toURI());
+        //try {
+            File reportDir = new File("target/test-classes");
+            //File reportDir = new File(getClass().getClassLoader().getResource(".").toURI());
             if (!reportDir.exists() || !reportDir.isDirectory()) {
                 throw new IllegalStateException("Cannot locate target folder for performance report");
             }
             return reportDir;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        //} catch (URISyntaxException e) {
+        //    throw new RuntimeException(e);
+        //}
     }
 }

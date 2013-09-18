@@ -46,7 +46,7 @@ public final class CsvReport extends TestReportGenerator {
         File reportDir = new File(rootDir, REPORT_PARENT_DIR.replaceAll("\\.", "/"));
         if (!reportDir.exists()) {
             if (!reportDir.mkdir()) {
-                throw new IllegalStateException("Cannot create report directory");
+                throw new IllegalStateException("Cannot create report directory '" + reportDir + "'");
             }
         }
         String fileName = repositoryName.toLowerCase().replaceAll(" ", "-") + ".csv";

@@ -7,8 +7,4 @@ do
   echo "*         Running '$configName' configuration "
   echo "***********************************************************"
   mvn clean install -P$configName
-  mkdir -p results/$configName
-  rm -rf results/$configName
-  mkdir -p results/$configName
-  cp -r ./perf-tests-report/target/test-classes/d3/* results/$configName/
 done

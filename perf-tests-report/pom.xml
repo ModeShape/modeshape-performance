@@ -61,28 +61,49 @@
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-3.0-tests</artifactId>
+            <artifactId>modeshape-3.0.x.Final-tests</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-3.0.0.Beta4-tests</artifactId>
+            <artifactId>modeshape-3.1.x-tests</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-3.0.0.CR1-tests</artifactId>
+            <artifactId>modeshape-3.2.x-tests</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-3.0.1.Final-tests</artifactId>
+            <artifactId>modeshape-3.3.x-tests</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-3.4.x-tests</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-3.5.x-tests</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-latest-tests</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
         </dependency>
