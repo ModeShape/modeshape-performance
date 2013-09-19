@@ -39,7 +39,7 @@ import javax.jcr.SimpleCredentials;
 import org.junit.Before;
 import org.junit.Test;
 import org.modeshape.jcr.perftests.RunnerCfg.AfterOperation;
-import org.modeshape.jcr.perftests.report.TextFileReport;
+import org.modeshape.jcr.perftests.output.TextFileOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,6 +235,6 @@ public abstract class AbstractImplementationTest {
         performanceTestSuiteRunner.runPerformanceTests(repositoryFactoryParameters, credentials);
 
         // and produce the report data ...
-        new TextFileReport(TimeUnit.SECONDS).generateReport(performanceTestSuiteRunner.getTestData());
+        new TextFileOutput(TimeUnit.SECONDS).generateOutput(performanceTestSuiteRunner.getTestData());
     }
 }

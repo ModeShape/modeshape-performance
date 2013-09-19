@@ -29,9 +29,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class SingleAggregatedReport {
 
     public void generate(TimeUnit timeUnit) throws Exception {
-        Map<String, ?> templateModel = getTemplateModel(new ReportDataAggregator().loadPerformanceData(timeUnit), timeUnit);
-        File reportsFolder = ReportsHelper.getRootReportDir();
-        File reportFile = ReportsHelper.getReportFile(reportsFolder, getReportFilename());
+        Map<String, ?> templateModel = getTemplateModel(new CsvReportDataAggregator().loadPerformanceData(timeUnit), timeUnit);
+        File reportFile = ReportsHelper.getReportFile(getReportFilename());
         new FreemarkerTemplateProcessor(reportFile, getTemplateFilename()).processTemplate(templateModel);
     }
 

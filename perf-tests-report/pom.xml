@@ -13,6 +13,7 @@
 
     <properties>
         <sigar.version>1.6.3.82</sigar.version>
+        <freemarker.version>2.3.18</freemarker.version>
     </properties>
     <dependencies>
 
@@ -42,56 +43,73 @@
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-            <version>2.3.18</version>
+            <version>${freemarker.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>jackrabbit-2.5.2-tests</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>jackrabbit-2.7.0-tests</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-2.7.0.Final-tests</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-2.8.2.Final-tests</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-3.0-tests</artifactId>
+            <artifactId>modeshape-3.0.x.Final-tests</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-3.0.0.Beta4-tests</artifactId>
+            <artifactId>modeshape-3.1.x-tests</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-3.0.0.CR1-tests</artifactId>
+            <artifactId>modeshape-3.2.x-tests</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-3.0.1.Final-tests</artifactId>
+            <artifactId>modeshape-3.3.x-tests</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
         </dependency>
 
         <dependency>
             <groupId>org.modeshape</groupId>
-            <artifactId>jackrabbit-tests</artifactId>
+            <artifactId>modeshape-3.4.x-tests</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-3.5.x-tests</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-latest-tests</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -108,8 +126,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
-
-
     </dependencies>
 
     <build>

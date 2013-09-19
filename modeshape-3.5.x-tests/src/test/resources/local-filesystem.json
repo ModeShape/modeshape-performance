@@ -1,0 +1,37 @@
+{
+    "name" : "Test Repository",
+    "jndiName" : "",
+    "monitoring" : {
+        "enabled" : true
+    },
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "storage" : {
+        "cacheConfiguration" : "${configuration.name}-infinispan-config.xml",
+        "cacheName" : "persisted-repository",
+        "binaryStorage" : {
+            "type" : "file",
+            "directory": "${project.build.directory}/${configuration.name}/binaries",
+            "minimumBinarySizeInBytes" : 4096
+        }
+    },
+    "query" : {
+        "enabled" : true,
+        "enableFullTextSearch" : true,
+        "indexStorage" : {
+            "type" : "filesystem",
+            "location" : "${project.build.directory}/${configuration.name}/indexes",
+            "lockingStrategy" : "native",
+            "fileSystemAccessType" : "auto"
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    }
+}
