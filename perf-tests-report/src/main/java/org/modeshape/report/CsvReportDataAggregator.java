@@ -15,7 +15,8 @@
 
 package org.modeshape.report;
 
-import org.modeshape.jcr.perftests.report.CsvReport;
+import org.modeshape.jcr.perftests.OutputCfg;
+import org.modeshape.jcr.perftests.output.CsvOutput;
 import org.modeshape.jcr.perftests.util.DurationsConverter;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -32,12 +33,12 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Horia Chiorean
  */
-public final class ReportDataAggregator {
+public final class CsvReportDataAggregator {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ReportDataAggregator.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CsvReportDataAggregator.class);
 
     /**
-     * Loads all the performance data by scanning the classpath for csv files under the {@link CsvReport#REPORT_PARENT_DIR} location.
+     * Loads all the performance data by scanning the classpath for csv files under the {@link org.modeshape.jcr.perftests.OutputCfg#testDataOutputPackage()} location.
      * @return a map of the form - [test, [repository name, (duration ns 1, duration ns 2...)]]
      *
      *@param convertToUnit the unit to which the performance data should be converted
@@ -46,7 +47,7 @@ public final class ReportDataAggregator {
      Map<String, Map<String, List<Double>>> loadPerformanceData(TimeUnit convertToUnit) throws Exception {
         Map<String, Map<String, List<Long>>> testToRepositoryDurationsMap = new TreeMap<String, Map<String, List<Long>>>();
         ConfigurationBuilder builder = new ConfigurationBuilder()
-                .setUrls(ClasspathHelper.forPackage(CsvReport.REPORT_PARENT_DIR))
+                .setUrls(ClasspathHelper.forPackage(OutputCfg.testDataOutputPackage()))
                 .setScanners(new ResourcesScanner())
                 .useParallelExecutor();
         Reflections reflections = new Reflections(builder);
@@ -62,7 +63,7 @@ public final class ReportDataAggregator {
     private void processReport( String reportFileName, Map<String, Map<String, List<Long>>> testToRepositoryDurationsMap ) throws IOException {
         Properties reportProperties = new Properties();
         reportProperties.load(getClass().getClassLoader().getResourceAsStream(reportFileName));
-        String repositoryName = reportProperties.getProperty(CsvReport.REPOSITORY_PROPERTY);
+        String repositoryName = reportProperties.getProperty(CsvOutput.REPOSITORY_PROPERTY);
         if (repositoryName == null) {
             LOGGER.warn(reportFileName + " is not a valid test data file. Ignoring it");
             return;
@@ -76,7 +77,7 @@ public final class ReportDataAggregator {
 
     private void loadDataForTest( String durationsString, String repositoryName, String test,
                                   Map<String, Map<String, List<Long>>> testToRepositoryDurationsMap ) {
-        if (test.equals(CsvReport.REPOSITORY_PROPERTY)) {
+        if (test.equals(CsvOutput.REPOSITORY_PROPERTY)) {
             return;
         }
         Map<String, List<Long>> repositoryDurationsMap = testToRepositoryDurationsMap.get(test);

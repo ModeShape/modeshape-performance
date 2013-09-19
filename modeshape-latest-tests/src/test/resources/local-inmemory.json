@@ -3,7 +3,7 @@
     "jndiName" : "",
     "transactionMode" : "none",
     "monitoring" : {
-        "enabled" : false
+        "enabled" : true
     },
     "workspaces" : {
         "predefined" : ["otherWorkspace"],

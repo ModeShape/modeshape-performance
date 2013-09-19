@@ -1,9 +1,8 @@
 {
     "name" : "Test Repository",
     "jndiName" : "",
-    "transactionMode" : "none",
     "monitoring" : {
-        "enabled" : false
+        "enabled" : true
     },
     "workspaces" : {
         "predefined" : ["otherWorkspace"],
@@ -33,6 +32,6 @@
         "anonymous" : {
             "roles" : ["readonly","readwrite","admin"],
             "useOnFailedLogin" : false
-        },
+        }
     }
 }

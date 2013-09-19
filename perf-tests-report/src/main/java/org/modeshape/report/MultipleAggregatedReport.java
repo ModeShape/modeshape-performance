@@ -34,12 +34,11 @@ public abstract class MultipleAggregatedReport {
     private static final MachineInfo MACHINE_INFO = new MachineInfo();
 
     public void generate( TimeUnit timeUnit ) throws Exception {
-        Map<String, Map<String, List<Double>>> convertedDataMap = new ReportDataAggregator().loadPerformanceData(timeUnit);
-        File reportRootDir = ReportsHelper.getRootReportDir();
+        Map<String, Map<String, List<Double>>> convertedDataMap = new CsvReportDataAggregator().loadPerformanceData(timeUnit);
 
         for (String testName : convertedDataMap.keySet()) {
             String filename = getReportFilename(testName);
-            File reportFile = ReportsHelper.getReportFile(reportRootDir, filename);
+            File reportFile = ReportsHelper.getReportFile(filename);
 
             String templateName = getReportTemplate(testName);
             Map<String, Object> templateModel = getTemplateModel(testName, convertedDataMap.get(testName), timeUnit);
@@ -50,7 +49,7 @@ public abstract class MultipleAggregatedReport {
         String indexFilename = getIndexReportFilename();
         if (indexFilename != null) {
             // Generate the index report ...
-            File reportIndexFile = ReportsHelper.getReportFile(reportRootDir, indexFilename);
+            File reportIndexFile = ReportsHelper.getReportFile(indexFilename);
 
             String indexTemplateName = getIndexReportTemplate();
             Map<String, Object> indexModel = new HashMap<String, Object>();

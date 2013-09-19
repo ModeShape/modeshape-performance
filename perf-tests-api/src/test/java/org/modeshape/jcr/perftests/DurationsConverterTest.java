@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.modeshape.jcr.perftests;
+package org.modeshape.jcr.perftests;
 
 import static java.util.concurrent.TimeUnit.*;
 import static junit.framework.Assert.assertEquals;

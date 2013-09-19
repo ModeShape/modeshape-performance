@@ -19,7 +19,7 @@ package org.modeshape.jcr.perftests;
 import javax.jcr.Credentials;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryFactory;
-import org.modeshape.jcr.perftests.report.CsvReport;
+import org.modeshape.jcr.perftests.output.CsvOutput;
 import org.reflections.Reflections;
 import org.reflections.scanners.TypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -111,7 +111,7 @@ public final class SuiteRunner {
             }
         }
 
-        new CsvReport().generateReport(testData);
+        new CsvOutput().generateOutput(testData);
     }
 
     /**
@@ -193,32 +193,31 @@ public final class SuiteRunner {
         }
 
         void execute() throws Exception {
-            suite.setUp();
-
-            //run the warmup without recording
             String suiteName = suite.getClass().getSimpleName();
-            LOGGER.info("{} warming up....", suiteName);
+            LOGGER.info("Starting {} ....", suiteName);
+            //run the warmup without recording
             try {
+                LOGGER.info("{} setUp()....", suiteName);
+                suite.setUp();
+
+                LOGGER.info("{} warming up....", suiteName);
                 for (int i = 0; i < warmupCount; i++) {
                     suite.run();
                 }
-            } catch (Throwable t) {
-                LOGGER.warn("{} error during warmup: {}", suiteName, t.getMessage());
-            }
 
-            //run & record
-            try {
+                //run & record
                 for (int i = 0; i < runCount; i++) {
                     long start = System.nanoTime();
                     suite.run();
                     long duration = System.nanoTime() - start;
                     getTestData().recordSuccess(suiteName, duration, i + 1);
                 }
+                LOGGER.info("{} tearDown()....", suiteName);
+                suite.tearDown();
             } catch (Throwable throwable) {
+                LOGGER.error("Error while running " + suiteName, throwable);
                 getTestData().recordFailure(suiteName, throwable);
             }
-
-            suite.tearDown();
         }
     }
 

@@ -1,14 +1,16 @@
 {
     "name" : "Test Repository",
     "jndiName" : "",
-    "transactionMode" : "none",
     "monitoring" : {
-        "enabled" : false
+        "enabled" : true
     },
     "workspaces" : {
         "predefined" : ["otherWorkspace"],
         "default" : "default",
         "allowCreation" : true
+    },
+    "storage" : {
+        "transactionManagerLookup" : "org.infinispan.transaction.lookup.DummyTransactionManagerLookup"
     },
     "query" : {
         "enabled" : true,
@@ -21,6 +23,6 @@
         "anonymous" : {
             "roles" : ["readonly","readwrite","admin"],
             "useOnFailedLogin" : false
-        },
+        }
     }
 }

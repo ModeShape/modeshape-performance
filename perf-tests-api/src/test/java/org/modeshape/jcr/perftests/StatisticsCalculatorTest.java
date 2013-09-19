@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.modeshape.jcr.perftests;
+package org.modeshape.jcr.perftests;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import org.junit.Test;
-import org.modeshape.jcr.perftests.StatisticalData;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.junit.Test;
 
 /**
  * Unit test for the 5nr summary calculations.

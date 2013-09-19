@@ -1,7 +1,6 @@
 {
     "name" : "Test Repository",
     "jndiName" : "",
-    "transactionMode" : "none",
     "monitoring" : {
         "enabled" : false
     },
@@ -24,6 +23,6 @@
         "anonymous" : {
             "roles" : ["readonly","readwrite","admin"],
             "useOnFailedLogin" : false
-        },
+        }
     }
 }

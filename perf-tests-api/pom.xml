@@ -16,9 +16,9 @@
         <tests.exclude></tests.exclude>
         <!--By default, all are included-->
         <tests.include></tests.include>
-        <repeat.count>20</repeat.count>
-        <warmup.count>5</warmup.count>
-        <testsuite.config.nodeCount>40</testsuite.config.nodeCount>
+        <repeat.count>1</repeat.count>
+        <warmup.count>1</warmup.count>
+        <testsuite.config.nodeCount>2</testsuite.config.nodeCount>
     </properties>
 
     <dependencies>

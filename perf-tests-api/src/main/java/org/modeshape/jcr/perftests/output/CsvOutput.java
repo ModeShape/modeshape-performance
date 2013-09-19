@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.modeshape.jcr.perftests.report;
+package org.modeshape.jcr.perftests.output;
 
+import org.modeshape.jcr.perftests.OutputCfg;
 import org.modeshape.jcr.perftests.TestData;
 import java.io.File;
 import java.io.FileWriter;
@@ -26,31 +27,24 @@ import java.util.Properties;
  *
  * @author Horia Chiorean
  */
-public final class CsvReport extends TestReportGenerator {
+public final class CsvOutput extends TestDataOutput {
 
     public static final String REPOSITORY_PROPERTY = "Repository";
-    public static final String REPORT_PARENT_DIR = "org.modeshape.report";
 
     @Override
-    public void generateReport( TestData testData ) throws Exception {
+    public void generateOutput( TestData testData ) throws Exception {
         Properties performanceProperties = new Properties();
         performanceProperties.put(REPOSITORY_PROPERTY, testData.getRepositoryName());
         for (String testName : testData.getSuccessfulTestNames()) {
             performanceProperties.setProperty(testName, getTestPerfData(testData, testName));
         }
-        performanceProperties.store(new FileWriter(getReportFile(testData.getRepositoryName())), null);
+        performanceProperties.store(new FileWriter(getOutputFile(testData.getRepositoryName())), null);
     }
 
-    private File getReportFile(String repositoryName) {
-        File rootDir = getRootReportDir();
-        File reportDir = new File(rootDir, REPORT_PARENT_DIR.replaceAll("\\.", "/"));
-        if (!reportDir.exists()) {
-            if (!reportDir.mkdir()) {
-                throw new IllegalStateException("Cannot create report directory '" + reportDir + "'");
-            }
-        }
+    private File getOutputFile( String repositoryName ) {
+        File outputDir = OutputCfg.testDataOutputFolder();
         String fileName = repositoryName.toLowerCase().replaceAll(" ", "-") + ".csv";
-        return new File(reportDir, fileName);
+        return new File(outputDir, fileName);
     }
 
     private String getTestPerfData( TestData testData, String testName ) {

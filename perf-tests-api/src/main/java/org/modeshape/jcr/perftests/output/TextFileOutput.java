@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.modeshape.jcr.perftests.report;
+package org.modeshape.jcr.perftests.output;
 
+import org.modeshape.jcr.perftests.OutputCfg;
 import org.modeshape.jcr.perftests.StatisticalData;
 import org.modeshape.jcr.perftests.TestData;
 import org.modeshape.jcr.perftests.util.DurationsConverter;
@@ -34,18 +35,18 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Horia Chiorean
  */
-public final class TextFileReport extends TestReportGenerator {
+public final class TextFileOutput extends TestDataOutput {
 
     private final File reportFile;
     private final TimeUnit timeUnit;
 
-    public TextFileReport( TimeUnit timeUnit ) {
-        this.reportFile = new File(getRootReportDir(), "perf-report.txt");
+    public TextFileOutput( TimeUnit timeUnit ) {
+        this.reportFile = new File(OutputCfg.testDataOutputFolder(), "perf-report.txt");
         this.timeUnit = timeUnit;
     }
 
     @Override
-    public void generateReport( TestData testData ) throws Exception {
+    public void generateOutput( TestData testData ) throws Exception {
         PrintStream ps = new PrintStream(new FileOutputStream(reportFile, true));
         try {
             printHeader(ps);

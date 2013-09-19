@@ -56,9 +56,8 @@ to run is `mvn clean install` from the parent module (which means that all the t
 
 Once the test have been run, the following reports are generated:
 
-- `<module-name>/target/test-classes/perf-report.txt` - a plain text file, which contains some statistical information (5 number summary and standard deviation) for each test run
-- `perf-tests-report/target/test-classes/google/google-box-chart.html` - an HTML which displays box charts using Google Charts API
-- `perf-tests-report/target/test-classes/boxplot/` - a set of box charts for each test run, generated using http://informationandvisualization.de/blog/box-plot.
+- `<module-name>/target/classes/test-data-output/perf-report.txt` - a plain text file, which contains some statistical information (5 number summary and standard deviation) for each test run
+- `perf-tests-report/reports/yyyy-MM-dd_hh-mm-ss - a set of box charts for each test run, generated using http://informationandvisualization.de/blog/box-plot.
 
 ## Tests
 
