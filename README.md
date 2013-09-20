@@ -46,36 +46,44 @@ The following modules each run the test suite against a specific version of [Jac
 
 To test the performance of another JCR 2.0 compliant repository or another version of ModeShape or Jackrabbit, simply copy one of the existing `tests` modules and change it to have the correct dependencies and to initialize the JCR repository. Be sure to add your module to the parent `pom.xml` and as a dependency in `perf-tests-report/pom.xml`.
 
+## Repository configurations
+
+Currently each of the different modules defines two test configurations:
+
+* `local-inmemory` configures and tests a self-contained non-clustered memory-only repository
+* `local-filesystem` configures and tests a self-contained non-clustered repository that persists to the local file system
+
+Each repository implementation has support for both configurations, though the file system persistence is implemented quite differently and thus each has different benefits, liabilities, and even configuration settings. Consequently, take caution comparing the performance of these different configurations.
 
 ## Usage
 
-To use the framework in its current version, you need to use Maven (2.x or greater). Once you have the source code, all you need
-to run is `mvn clean install` from the parent module (which means that all the tests against all the repositories will be run).
+To use the framework in its current version, you need to use Maven (3.x or greater). Once you have the source code, you can either run a script that runs all of the tests in each module against all repository configurations, or run the individual Maven command to run all of the tests in each module against a single repository configuration.
+
+To run the script:
+
+    $ bin/run.sh
+
+To following Maven commands are equivalent:
+
+    $ mvn clean install -Plocal-inmemory
+    $ mvn clean install -Plocal-filesystem
+
+Note that each Maven command runs a single profile (configuration) at a time.
+
 
 ### Reporting
 
-Once the test have been run, the following reports are generated:
+The reports for each test are placed in `reports/{timestamp}`. This makes it very easy to run lots of tests and keep all of the results. Note that the normal `mvn clean` command does not remove any of the generated reports, so they need to be removed manually.
 
-- `<module-name>/target/classes/test-data-output/perf-report.txt` - a plain text file, which contains some statistical information (5 number summary and standard deviation) for each test run
-- `perf-tests-report/reports/yyyy-MM-dd_hh-mm-ss - a set of box charts for each test run, generated using http://informationandvisualization.de/blog/box-plot.
-
-## Tests
-
-The performance tests are grouped into several subpackages inside `org.modeshape.jcr.perftests`:
-
-- init - contains the tests which measure initialization performance
-- query - contains the tests which measure query performance
-- read - contains the tests which measure read performance
-- write - contains the tests which measure write performance
 
 ### Adding new tests
 
 To add a new test, all you need to do is subclass the `org.modeshape.jcr.perftests.AbstractPerformanceTestSuite` class inside the
 `perf-tests-api` module.
 
-## Configuration
+## Test parameters
 
-The following configuration options are available for tweaking the framework:
+There are several files that control how the tests are configured. Under the `perf-tests-api/src/main/resources` are three properties files:
 
 - `runner.properties` - configuration file which controls the global parameters for the test runner
 
@@ -87,3 +95,11 @@ The following configuration options are available for tweaking the framework:
 - `testsuite.properties` - configuration file which controls the configuration parameters for the test suites (all of them)
 
   * `testsuite.config.nodeCount` - the number of nodes which are set-up by default by each suite. Note that there may be suites that ignore this setting.
+
+- `output.properties` - a configuration file that controls where the output for each module is written
+  * `test.data.output.folder` - the folder where the raw text data for each test should be placed inside the corresponding test module, relative to the current working directory, which is `${basedir}`. The default is `target/classes/test-data-output`
+  * `test.data.output.package` - the package (inside each module jar) where the output data can be located. It is directly related to the above path, and defaults to `test-data-output`
+  * `reports.output.folder` - the folder where the graphic reports should be placed, relative to the current working directory, which is `${basedir}`. The default is `reports`.
+
+Then, each module can define a properties file for each configuration, and these are placed in `{module}/src/test/resources` and typically named `{profile-name}.properties`. The content of these files are usually implementation specific, but can also override any of the properties defined above.
+
