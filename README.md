@@ -37,6 +37,8 @@ The following modules each run the test suite against the latest available [Mode
 - `modeshape-3.3.x.Final-tests`
 - `modeshape-3.4.x.Final-tests`
 - `modeshape-3.5.x.Final-tests`
+- `modeshape-3.6.x.Final-tests`
+- `modeshape-3.7.x.Final-tests`
 - `modeshape-latest-tests` - runs against the current snapshot for the in-development version
 
 The following modules each run the test suite against a specific version of [JackRabbit](http://jackrabbit.apache.org) as denoted in the module name:
@@ -63,7 +65,7 @@ To run the script:
 
     $ bin/run.sh
 
-To following Maven commands are equivalent:
+The following Maven commands are equivalent:
 
     $ mvn clean install -Plocal-inmemory
     $ mvn clean install -Plocal-filesystem

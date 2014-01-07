@@ -151,6 +151,8 @@
         <module>modeshape-3.3.x-tests</module>
         <module>modeshape-3.4.x-tests</module>
         <module>modeshape-3.5.x-tests</module>
+        <module>modeshape-3.6.x-tests</module>
+        <!--module>modeshape-3.7.x-tests</module-->
         <module>modeshape-latest-tests</module>
         <module>perf-tests-report</module>
     </modules>
